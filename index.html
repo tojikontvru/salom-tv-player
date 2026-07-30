@@ -160,7 +160,7 @@ body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:10
 
 <div class="wrap" id="gw">
   <div class="ld" id="ld"><div class="sp"></div><p>Загружаем каналы…</p></div>
-  <div class="st st-er hid" id="er"><p id="erM">Не удалось загрузить</p><button id="erB" onclick="go()">Повторить</button></div>
+  <div class="st st-er hid" id="er"><p id="erM">Не удалось загрузить</p><button id="erB">Повторить</button></div>
   <div class="hid" id="cb">
     <div class="gh"><h2 id="gT">Все каналы</h2><span id="gC"></span></div>
     <div class="grid" id="gR"></div>
@@ -202,12 +202,24 @@ function fmt(s){var m=Math.floor(s/60),sc=Math.floor(s%60);return m+':'+(sc<10?'
 
 /* ===== API ===== */
 function loadData(){
-  return fetch(API,{headers:{'Accept':'application/json'}}).then(function(r){
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    return r.json();
-  }).then(function(d){
-    if(!d.tv_channels||!d.tv_channels.length) throw new Error('Нет каналов');
-    return d.tv_channels;
+  return new Promise(function(resolve,reject){
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',API,true);
+    xhr.timeout=15000;
+    xhr.onload=function(){
+      try{
+        if(xhr.status>=200&&xhr.status<300){
+          var d=JSON.parse(xhr.responseText);
+          if(d.tv_channels&&d.tv_channels.length) resolve(d.tv_channels);
+          else reject(new Error('Нет каналов'));
+        } else {
+          reject(new Error('HTTP '+xhr.status));
+        }
+      }catch(e){reject(new Error('Ошибка парсинга: '+e.message))}
+    };
+    xhr.onerror=function(){reject(new Error('Сеть недоступна'))};
+    xhr.ontimeout=function(){reject(new Error('Таймаут соединения'))};
+    xhr.send();
   });
 }
 
@@ -227,7 +239,9 @@ function filter(){
 /* ===== RENDER ===== */
 function mkCard(c){
   var el=document.createElement('div');el.className='card';el.tabIndex=0;el.setAttribute('role','button');
-  var thumb=document.createElement('img');thumb.className='thumb';thumb.src=c.image||'';thumb.alt=c.title_ru||'';thumb.loading='lazy';thumb.decoding='async';el.appendChild(thumb);
+  var thumb=document.createElement('img');thumb.className='thumb';thumb.src=c.image||'';thumb.alt=c.title_ru||'';thumb.loading='lazy';thumb.decoding='async';
+  thumb.onerror=function(){var p=thumb.parentElement;if(p){p.style.background='linear-gradient(135deg,#e01e5a 0%,#7c0e3a 100%)';thumb.style.display='none'}};
+  el.appendChild(thumb);
   var badge=document.createElement('span');badge.className='badge';badge.textContent='TV';el.appendChild(badge);
   var info=document.createElement('div');info.className='info';
   var h3=document.createElement('h3');h3.textContent=c.title_ru||c.title_en||c.title_uz||'—';info.appendChild(h3);
@@ -401,20 +415,25 @@ document.getElementById('logo').addEventListener('click',function(e){e.preventDe
 
 /* ===== INIT ===== */
 function go(){
+  console.log('[SALOM-TV] Loading...');
   document.getElementById('ld').classList.remove('hid');
   document.getElementById('er').classList.add('hid');
   document.getElementById('cb').classList.add('hid');
   document.getElementById('ep').classList.add('hid');
   loadData().then(function(d){
+    console.log('[SALOM-TV] Loaded '+d.length+' channels');
     chs=d;
     document.getElementById('ld').classList.add('hid');
     document.getElementById('cb').classList.remove('hid');
     buildTabs();render();
   }).catch(function(e){
-    console.error(e);
+    console.error('[SALOM-TV]',e);
     document.getElementById('ld').classList.add('hid');
     document.getElementById('er').classList.remove('hid');
-    document.getElementById('erM').textContent=e.message||'Ошибка';
+    var msg=e.message||'Ошибка';
+    if(msg==='Сеть недоступна') msg='Нет подключения к интернету. Проверьте сеть.';
+    if(msg.indexOf('Таймаут')>=0) msg='Сервер не отвечает. Попробуйте позже.';
+    document.getElementById('erM').textContent=msg;
   });
 }
 
