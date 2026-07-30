@@ -3,805 +3,329 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
-<title>Salom TV — смотри каналы</title>
+<title>Salom TV</title>
 <meta name="theme-color" content="#070714">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-
-<!-- HLS.js — стабильная версия -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-
 <style>
-/* ============================================================
-   Salom TV — Glassmorphism + Fullscreen Player
-   Все устройства: Phone → Tablet → Desktop → TV → Smart TV
-   ============================================================ */
 *{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px;-webkit-text-size-adjust:100%}
+html{font-size:16px}
+body{font-family:Inter,sans-serif;color:#ecedf2;background:#070714;min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 50% at 50% -15%,rgba(124,101,240,.18),transparent 65%),radial-gradient(ellipse 30% 35% at 5% 85%,rgba(94,234,212,.06),transparent 50%);pointer-events:none}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px}*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent}
 
-:root{
-  --bg:#070714;
-  --accent:#7c65f0;
-  --accent2:#5eead4;
-  --text:#ecedf2;
-  --text2:#8888a0;
-  --border:rgba(255,255,255,.08);
-  --glass:rgba(255,255,255,.04);
-}
-
-body{
-  font-family:Inter,system-ui,sans-serif;
-  color:var(--text);
-  background:var(--bg);
-  min-height:100dvh;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
-}
-
-/* Фон */
-body::before{
-  content:'';position:fixed;inset:0;z-index:-1;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -15%,rgba(124,101,240,.18),transparent 65%),
-    radial-gradient(ellipse 30% 35% at 5% 85%,rgba(94,234,212,.06),transparent 50%);
-  pointer-events:none;
-}
-
-/* Скролл */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px}
-*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08)transparent}
-
-/* ==================== HEADER ==================== */
-.header{
-  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
-  padding:12px 20px;
-  background:linear-gradient(135deg,rgba(255,255,255,.04),var(--glass));
-  backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);
-  border:1px solid var(--border);border-radius:32px;
-  position:sticky;top:clamp(8px,1.5vw,24px);z-index:100;
-}
-.logo{
-  display:flex;align-items:center;gap:8px;text-decoration:none;
-  font-weight:900;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:-.04em;
-  background:linear-gradient(135deg,#fff 35%,var(--accent2));
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  flex-shrink:0;
-}
+.hdr{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);border:1px solid rgba(255,255,255,.08);border-radius:32px;position:sticky;top:clamp(8px,1.5vw,24px);z-index:100}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:900;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:-.04em;background:linear-gradient(135deg,#fff 35%,#5eead4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;cursor:pointer}
 .logo span{-webkit-text-fill-color:initial;font-size:1.2em}
 
-/* ==================== TABS ==================== */
 .tabs{display:flex;flex-wrap:wrap;gap:3px;flex:1;min-width:160px;justify-content:center}
-.tab{
-  padding:6px 14px;border:none;border-radius:99px;background:transparent;
-  color:var(--text2);font:600 clamp(.65rem,.8vw,.75rem)/1.3 Inter,sans-serif;
-  cursor:pointer;white-space:nowrap;transition:.12s;
-  -webkit-tap-highlight-color:transparent;user-select:none;
-}
-.tab:hover{color:var(--text);background:rgba(255,255,255,.05)}
-.tab:active{transform:scale(.95)}
-.tab.active{
-  background:linear-gradient(135deg,var(--accent),#8a70ef);color:#fff;
-  box-shadow:0 3px 14px rgba(124,101,240,.35);
-}
+.tab{padding:6px 14px;border:none;border-radius:99px;background:transparent;color:#8888a0;font:600 clamp(.65rem,.8vw,.75rem)/1.3 Inter,sans-serif;cursor:pointer;white-space:nowrap;transition:.12s;-webkit-tap-highlight-color:transparent;user-select:none}
+.tab:hover{color:#ecedf2;background:rgba(255,255,255,.05)}.tab:active{transform:scale(.95)}
+.tab.on{background:linear-gradient(135deg,#7c65f0,#8a70ef);color:#fff;box-shadow:0 3px 14px rgba(124,101,240,.35)}
 
-/* ==================== SEARCH ==================== */
-.search{position:relative;flex:1;min-width:120px;max-width:300px}
-.search input{
-  width:100%;padding:7px 10px 7px 32px;
-  background:rgba(255,255,255,.04);border:1px solid var(--border);
-  border-radius:99px;color:var(--text);font-size:.82rem;outline:none;transition:.12s;
-  -webkit-appearance:none;
-}
-.search input::placeholder{color:var(--text2)}
-.search input:focus{border-color:var(--accent);background:rgba(255,255,255,.07)}
-.search::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;opacity:.4;pointer-events:none}
+.srch{position:relative;flex:1;min-width:120px;max-width:300px}
+.srch input{width:100%;padding:7px 10px 7px 32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:99px;color:#ecedf2;font-size:.82rem;outline:none;transition:.12s;-webkit-appearance:none}
+.srch input::placeholder{color:#8888a0}.srch input:focus{border-color:#7c65f0;background:rgba(255,255,255,.07)}
+.srch i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-style:normal;font-size:11px;opacity:.4;pointer-events:none}
 
-/* ==================== MAIN ==================== */
-.main{max-width:1920px;margin:0 auto;padding:clamp(8px,1.5vw,24px)}
+.wrap{max-width:1920px;margin:0 auto;padding:clamp(8px,1.5vw,24px)}
+.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.gh h2{font-size:clamp(.8rem,1.1vw,1.05rem);font-weight:700;color:#8888a0;letter-spacing:-.02em}
+.gh span{font-size:clamp(.6rem,.8vw,.7rem);color:rgba(255,255,255,.2)}
+.grid{display:grid;grid-template-columns:repeat(var(--c,5),1fr);gap:clamp(8px,1.2vw,20px)}
 
-/* ==================== GRID ==================== */
-.grid-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.grid-head h2{font-size:clamp(.8rem,1.1vw,1.05rem);font-weight:700;color:var(--text2);letter-spacing:-.02em}
-.grid-head span{font-size:clamp(.6rem,.8vw,.7rem);color:rgba(255,255,255,.2)}
-
-.grid{display:grid;grid-template-columns:repeat(var(--cols,5),1fr);gap:clamp(8px,1.2vw,20px)}
-
-/* ==================== CARD ==================== */
-.card{
-  display:flex;flex-direction:column;border-radius:24px;overflow:hidden;cursor:pointer;
-  border:1px solid var(--border);
-  background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.005));
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  transition:transform .3s,border-color .3s;
-  -webkit-tap-highlight-color:transparent;
-}
+.card{display:flex;flex-direction:column;border-radius:24px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.005));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .3s,border-color .3s;-webkit-tap-highlight-color:transparent}
 @media(hover:hover){.card:hover{transform:translateY(-5px) scale(1.015);border-color:rgba(255,255,255,.16)}.card:hover img{transform:scale(1.05)}}
 .card:active{transform:scale(.97)}
-
 .card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:rgba(0,0,0,.3);transition:transform .4s}
 .card h3{padding:10px 13px 13px;font-size:clamp(.72rem,.9vw,.82rem);font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ==================== LOADER ==================== */
-.loader{display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:center;min-height:240px}
-.loader .spin{width:36px;height:36px;border:3px solid rgba(255,255,255,.05);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loader p{font-size:.82rem;color:var(--text2);font-weight:500}
+.ld{display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:center;min-height:240px}
+.ld .sp{width:36px;height:36px;border:3px solid rgba(255,255,255,.05);border-top-color:#7c65f0;border-radius:50%;animation:sp .7s linear}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ld p{font-size:.82rem;color:#8888a0;font-weight:500}
 
-.state{text-align:center;padding:40px 20px;border-radius:24px;border:1px solid var(--border);background:var(--glass)}
-.state p{color:var(--text2);font-size:.86rem;margin:8px 0 14px;max-width:400px;margin-left:auto;margin-right:auto}
-.state button{padding:8px 22px;border:none;border-radius:99px;background:var(--accent);color:#fff;font:600 .8rem Inter,sans-serif;cursor:pointer;transition:.12s}
-.state button:hover{box-shadow:0 0 16px rgba(124,101,240,.25)}
-.state--err{border-color:rgba(255,90,110,.2)}
+.st{text-align:center;padding:40px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04)}
+.st p{color:#8888a0;font-size:.86rem;margin:8px 0 14px;max-width:400px;margin-left:auto;margin-right:auto}
+.st button{padding:8px 22px;border:none;border-radius:99px;background:#7c65f0;color:#fff;font:600 .8rem Inter,sans-serif;cursor:pointer}
+.st-er{border-color:rgba(255,90,110,.2)}
 
-/* ==================== PLAYER (fullscreen) ==================== */
-.player{
-  display:none;position:fixed;inset:0;z-index:1000;
-  background:#000;flex-direction:column;
-  -webkit-user-select:none;user-select:none;
-}
-.player.open{display:flex}
+/* PLAYER */
+#player{display:none;position:fixed;inset:0;z-index:1000;background:#000;-webkit-user-select:none;user-select:none}
+#player.on{display:flex}
+#player video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.buf{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border:3px solid rgba(255,255,255,.1);border-top-color:#7c65f0;border-radius:50%;animation:sp .7s linear infinite;z-index:1;pointer-events:none}
+.buf.off{display:none}
 
-.video-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
-.player video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.ctrl{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transition:opacity .3s;pointer-events:none}
+.ctrl.on{opacity:1;pointer-events:auto}
+.ct{display:flex;align-items:center;gap:14px;padding:20px 24px;background:linear-gradient(to bottom,rgba(0,0,0,.88) 0%,rgba(0,0,0,.4) 60%,transparent 100%)}
+.ct span{flex:1;font-weight:700;font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct button{width:38px;height:38px;border:none;border-radius:99px;background:rgba(255,255,255,.1);color:#fff;font-size:1.1rem;cursor:pointer;transition:.15s;flex-shrink:0}
+.ct button:hover{background:rgba(255,90,110,.4);transform:rotate(90deg)}
+.cb{display:flex;align-items:center;gap:12px;padding:20px 24px;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.4) 60%,transparent 100%)}
+.cb button{padding:10px 18px;border:none;border-radius:99px;background:rgba(255,255,255,.08);color:#fff;font:600 .82rem/1 Inter,sans-serif;cursor:pointer;transition:.15s}
+.cb button:active{transform:scale(.95)}
+.cb .bk{background:linear-gradient(135deg,#7c65f0,#6d54e0);box-shadow:0 4px 16px rgba(124,101,240,.25)}
+.cb .tm{color:rgba(255,255,255,.6);font-size:.75rem;font-variant-numeric:tabular-nums;margin-left:auto}
 
-/* Буферизация */
-.buffering{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:44px;height:44px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--accent);
-  border-radius:50%;animation:spin .7s linear infinite;z-index:1;pointer-events:none;
-}
-.buffering.hidden{display:none}
+.tst{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px}
+.tst div{padding:10px 18px;border-radius:10px;background:rgba(10,10,24,.92);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);color:#ecedf2;font-size:.78rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fd .3s;max-width:calc(100vw - 40px)}
+.tst .er{border-left:3px solid #ff5a6e}
+@keyframes fd{from{opacity:0;transform:translateY(12px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+.hid{display:none!important}
 
-/* Контролы */
-.ctrl{
-  position:absolute;inset:0;z-index:2;
-  display:flex;flex-direction:column;justify-content:space-between;
-  opacity:0;transition:opacity .3s;pointer-events:none;
-}
-.ctrl.show{opacity:1;pointer-events:auto}
-
-.ctrl-top{
-  display:flex;align-items:center;gap:14px;padding:20px 24px;
-  background:linear-gradient(to bottom,rgba(0,0,0,.88) 0%,rgba(0,0,0,.4) 60%,transparent 100%);
-}
-.ctrl-top span{flex:1;font-weight:700;font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctrl-close{
-  width:38px;height:38px;border:none;border-radius:99px;
-  background:rgba(255,255,255,.1);backdrop-filter:blur(8px);
-  color:#fff;font-size:1.1rem;cursor:pointer;transition:.15s;flex-shrink:0;
-}
-.ctrl-close:hover{background:rgba(255,90,110,.4);transform:rotate(90deg)}
-
-.ctrl-bot{
-  display:flex;align-items:center;gap:12px;padding:20px 24px;
-  background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.4) 60%,transparent 100%);
-}
-.ctrl-bot .btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:10px 18px;border:none;border-radius:99px;
-  background:rgba(255,255,255,.08);backdrop-filter:blur(8px);
-  color:#fff;font:600 .82rem/1 Inter,sans-serif;cursor:pointer;transition:.15s;
-}
-.ctrl-bot .btn:active{transform:scale(.95)}
-.ctrl-bot .btn-back{
-  background:linear-gradient(135deg,var(--accent),#6d54e0);
-  box-shadow:0 4px 16px rgba(124,101,240,.25);
-}
-.ctrl-bot .btn-back:active{transform:scale(.95)}
-.ctrl-bot .time{color:rgba(255,255,255,.6);font-size:.75rem;font-variant-numeric:tabular-nums;margin-left:auto}
-
-/* ==================== TOAST ==================== */
-.toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px}
-.toast{padding:10px 18px;border-radius:10px;background:rgba(10,10,24,.92);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--text);font-size:.78rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .3s;max-width:calc(100vw - 40px)}
-.toast.err{border-left:3px solid #ff5a6e}
-@keyframes fade{from{opacity:0;transform:translateY(12px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
-
-.hidden{display:none!important}
-
-/* ==================== RESPONSIVE ==================== */
-
-/* Phones */
-@media(max-width:600px){
-  :root{--cols:1}
-  .header{flex-direction:column;padding:10px 14px;gap:8px}
-  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:3px;padding:2px 0}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{padding:5px 11px;font-size:.68rem;flex-shrink:0}
-  .search{min-width:100%;max-width:none}
-  .ctrl-top{padding:clamp(12px,3vw,20px) clamp(12px,3vw,20px)}
-  .ctrl-top span{font-size:clamp(.9rem,4vw,1.3rem)}
-  .ctrl-bot{padding:clamp(12px,3vw,20px) clamp(12px,3vw,20px)}
-  .ctrl-bot .btn{padding:8px 14px;font-size:.72rem}
-  .ctrl-close{width:34px;height:34px}
-}
-
-/* Tablets */
-@media(min-width:601px)and(max-width:1024px){:root{--cols:3}.tabs{min-width:100%}}
-
-/* Desktop */
-@media(min-width:1025px)and(max-width:1920px){:root{--cols:5}}
-
-/* 4K / TV */
-@media(min-width:1921px){
-  :root{--cols:6}
-  .card img{aspect-ratio:21/9}
-  .grid{gap:26px}
-  body{font-size:18px}
-  .ctrl-top span{font-size:2rem}
-}
-
-/* Smart TV 4K+ */
-@media(min-width:2560px){:root{--cols:7}.main{max-width:2200px}}
-
-/* Tablet portrait */
-@media(max-width:768px)and(orientation:portrait){.tabs{min-width:100%}}
-
-/* Small phones */
-@media(max-width:380px){.tab{padding:4px 9px;font-size:.62rem}}
-
-/* Touch devices — убираем hover */
-@media(hover:none){
-  .card:hover{transform:none;border-color:var(--border)}
-  .card:hover img{transform:none}
-}
-
-/* Safe area (iPhone notch) */
-@supports(padding-top:env(safe-area-inset-top)){
-  .header{padding-top:calc(12px + env(safe-area-inset-top))}
-  .ctrl-bot{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
-}
+@media(max-width:600px){:root{--c:1}.hdr{flex-direction:column;padding:10px 14px;gap:8px}.tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tab{padding:5px 11px;font-size:.68rem;flex-shrink:0}.srch{min-width:100%;max-width:none}.ct,.cb{padding:clamp(12px,3vw,20px)}.cb button{padding:8px 14px;font-size:.72rem}.ct button{width:34px;height:34px}}
+@media(min-width:601px)and(max-width:1024px){:root{--c:3}.tabs{min-width:100%}}
+@media(min-width:1025px)and(max-width:1920px){:root{--c:5}}
+@media(min-width:1921px){:root{--c:6}.card img{aspect-ratio:21/9}body{font-size:18px}}
+@media(min-width:2560px){:root{--c:7}.wrap{max-width:2200px}}
+@media(hover:none){.card:hover{transform:none;border-color:rgba(255,255,255,.08)}.card:hover img{transform:none}}
+@supports(padding-top:env(safe-area-inset-top)){.hdr{padding-top:calc(12px + env(safe-area-inset-top))}.cb{padding-bottom:calc(20px + env(safe-area-inset-bottom))}}
 </style>
 </head>
 <body>
 
-<div class="main">
-
-<!-- HEADER -->
-<header class="header">
-  <a href="#" class="logo" id="logoLink"><span>📺</span> Salom TV</a>
+<header class="hdr">
+  <a class="logo" id="logo"><span>📺</span> Salom TV</a>
   <div class="tabs" id="tabs"></div>
-  <div class="search"><input type="search" id="search" placeholder="Поиск" autocomplete="off" enterkeyhint="search"></div>
+  <div class="srch"><i>🔍</i><input type="search" id="inp" placeholder="Поиск" autocomplete="off"></div>
 </header>
 
-<!-- PLAYER (весь экран) -->
-<div class="player" id="player">
-  <div class="video-wrap" id="videoWrap">
-    <video id="video" playsinline preload="none"></video>
-    <div class="buffering hidden" id="buffering"></div>
-    <div class="ctrl" id="ctrl">
-      <div class="ctrl-top">
-        <span id="cTitle">—</span>
-        <button class="ctrl-close" id="closeBtn" title="Закрыть">✕</button>
-      </div>
-      <div class="ctrl-bot">
-        <button class="btn" id="playBtn" title="Пауза">⏸</button>
-        <button class="btn btn-back" id="backBtn">← Назад</button>
-        <span class="time" id="cTime">0:00 / 0:00</span>
-      </div>
-    </div>
+<div id="player">
+  <video id="vid" playsinline preload="none" crossorigin="anonymous"></video>
+  <div class="buf" id="buf"></div>
+  <div class="ctrl" id="ctrl">
+    <div class="ct"><span id="ctt">—</span><button id="cX">✕</button></div>
+    <div class="cb"><button id="pB">⏸</button><button class="bk" id="bB">← Назад</button><span class="tm" id="tm">0:00 / 0:00</span></div>
   </div>
 </div>
 
-<!-- КАНАЛЫ -->
-<div id="gridWrap">
-  <div class="loader" id="loader"><div class="spin"></div><p>Загружаем каналы…</p></div>
-  <div class="state state--err hidden" id="errorBlock"><p id="errorMsg">Не удалось загрузить</p><button id="retryBtn">Повторить</button></div>
-  <div class="hidden" id="contentBlock">
-    <div class="grid-head"><h2 id="gridTitle">Все каналы</h2><span id="gridCount"></span></div>
-    <div class="grid" id="grid"></div>
+<div class="wrap" id="gw">
+  <div class="ld" id="ld"><div class="sp"></div><p>Загружаем каналы…</p></div>
+  <div class="st st-er hid" id="er"><p id="erM">Не удалось загрузить</p><button id="erB" onclick="go()">Повторить</button></div>
+  <div class="hid" id="cb">
+    <div class="gh"><h2 id="gT">Все каналы</h2><span id="gC"></span></div>
+    <div class="grid" id="gR"></div>
   </div>
-  <div class="state hidden" id="emptyBlock"><p>Ничего не найдено</p></div>
+  <div class="st hid" id="ep"><p>Ничего не найдено</p></div>
 </div>
 
-</div>
-
-<div class="toasts" id="toasts"></div>
+<div class="tst" id="tst"></div>
 
 <script>
-(function(){'use strict';
+(function(){
+'use strict';
 
-/* ============================================================
-   CONFIG
-   ============================================================ */
-const API  = 'https://spectator-api.salomtv.uz/v1/tv/channel';
-const HLS_BASE = 'https://link.salomtv.uz/playlist.m3u8?channel_id=';
+var API='https://spectator-api.salomtv.uz/v1/tv/channel';
+var HLS='https://link.salomtv.uz/playlist.m3u8?channel_id=';
 
-/* Категории — UUID (первые 8 символов) */
-const CATS = {
-  'Все':            null,
-  'Развлекательные':['42f8a6fe-4759','0d99c22c-fec7','862b68e6-7f59','9ac059cb-8461'],
-  'Новостные':      ['0318abfe-909c'],
-  'Спортивные':     ['2b25b899-0b24'],
-  'Детские':        null,
-  'Музыкальные':    null,
-  'Познавательные': ['8c396b35-03ae','862b68e6-7f59'],
-};
+var CATS={'Все':null,'Развлекательные':['42f8a6fe','0d99c22c','862b68e6','9ac059cb','0318abfe'],'Новостные':['0318abfe'],'Спортивные':['2b25b899'],'Детские':null,'Музыкальные':null,'Познавательные':['8c396b35','862b68e6']};
+var KW={'Детские':['детск','kids','baby','malysh','cartoon','mult','children','disney','nick','bola'],'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio','qoshiq']};
 
-/* Keyword-фильтры */
-const KW = {
-  'Детские':    ['детск','kids','baby','malysh','cartoon','mult','children','disney','nick','bola'],
-  'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio','qoshiq'],
-};
+var chs=[],tab='Все',srch='',hls=null,wk=null,ht=null,vl=[];
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let channels = [];
-let curTab = 'Все';
-let curSearch = '';
-let hls = null;
-let wakeLock = null;
-let hideTimer = null;
-let videoListeners = [];  // Храним слушатели чтобы удалять
+var vid=document.getElementById('vid');
+var player=document.getElementById('player');
+var ctrl=document.getElementById('ctrl');
+var buf=document.getElementById('buf');
+var gw=document.getElementById('gw');
+var gR=document.getElementById('gR');
+var ctt=document.getElementById('ctt');
+var tm=document.getElementById('tm');
+var pB=document.getElementById('pB');
 
-/* ============================================================
-   DOM (kebab → camelCase через getElementById)
-   ============================================================ */
-const el = id => document.getElementById(id);
-const $ = {
-  tabs:     el('tabs'),
-  loader:   el('loader'),
-  err:      el('errorBlock'),
-  errMsg:   el('errorMsg'),
-  retry:    el('retryBtn'),
-  cont:     el('contentBlock'),
-  gTitle:   el('gridTitle'),
-  gCount:   el('gridCount'),
-  grid:     el('grid'),
-  empty:    el('emptyBlock'),
-  player:   el('player'),
-  videoWrap:el('videoWrap'),
-  video:    el('video'),
-  buffering:el('buffering'),
-  ctrl:     el('ctrl'),
-  cTitle:   el('cTitle'),
-  cTime:    el('cTime'),
-  playBtn:  el('playBtn'),
-  closeBtn: el('closeBtn'),
-  backBtn:  el('backBtn'),
-  search:   el('search'),
-  gridWrap: el('gridWrap'),
-  logoLink: el('logoLink'),
-};
+function toast(m,t){var d=document.createElement('div');d.className=t||'';d.textContent=m;document.getElementById('tst').appendChild(d);setTimeout(function(){d.remove()},3500)}
 
-/* ============================================================
-   TOAST
-   ============================================================ */
-function toast(msg, type){
-  const d = document.createElement('div');
-  d.className = 'toast' + (type ? ' ' + type : '');
-  d.textContent = msg;
-  el('toasts').appendChild(d);
-  setTimeout(()=>d.remove(), 3500);
-}
+function fmt(s){var m=Math.floor(s/60),sc=Math.floor(s%60);return m+':'+(sc<10?'0':'')+sc}
 
-/* ============================================================
-   API
-   ============================================================ */
-async function loadData(){
-  const r = await fetch(API, {
-    headers:{'Accept':'application/json'},
-    signal: typeof AbortSignal.timeout === 'function'
-      ? AbortSignal.timeout(10000)
-      : AbortSignal.abort(), // fallback для старых браузеров
+/* ===== API ===== */
+function loadData(){
+  return fetch(API,{headers:{'Accept':'application/json'}}).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(d){
+    if(!d.tv_channels||!d.tv_channels.length) throw new Error('Нет каналов');
+    return d.tv_channels;
   });
-  if(!r.ok) throw new Error('Сервер ответил: ' + r.status);
-  const d = await r.json();
-  if(!d.tv_channels?.length) throw new Error('Каналов нет');
-  return d.tv_channels;
 }
 
-/* ============================================================
-   ФИЛЬТР
-   ============================================================ */
+/* ===== ФИЛЬТР ===== */
 function filter(){
-  let list = channels;
-
-  // Категория
-  if(curTab !== 'Все'){
-    const ids = CATS[curTab];
-    const kws = KW[curTab] || [];
-
-    if(ids && ids.length){
-      list = list.filter(ch =>
-        (ch.category_ids||[]).some(cid => ids.some(prefix => cid.startsWith(prefix)))
-      );
-    }
-
-    if(kws.length){
-      const kl = kws.map(k => k.toLowerCase());
-      list = list.filter(ch => {
-        const t = (ch.title_ru || ch.title_en || ch.title_uz || '').toLowerCase();
-        return kl.some(k => t.includes(k));
-      });
-    }
+  var list=chs;
+  if(tab!=='Все'){
+    var ids=CATS[tab],kws=KW[tab]||[];
+    if(ids&&ids.length) list=list.filter(function(c){return(c.category_ids||[]).some(function(id){return ids.some(function(p){return id.indexOf(p)===0})})});
+    if(kws.length) list=list.filter(function(c){var t=(c.title_ru||c.title_en||c.title_uz||'').toLowerCase();return kws.some(function(k){return t.indexOf(k.toLowerCase())>=0})});
   }
-
-  // Поиск
-  const q = curSearch.trim().toLowerCase();
-  if(q){
-    list = list.filter(ch =>
-      (ch.title_ru || ch.title_en || ch.title_uz || '').toLowerCase().includes(q)
-    );
-  }
-
+  var q=srch.trim().toLowerCase();
+  if(q) list=list.filter(function(c){return(c.title_ru||c.title_en||c.title_uz||'').toLowerCase().indexOf(q)>=0});
   return list;
 }
 
-/* ============================================================
-   РЕНДЕР КАРТОЧЕК
-   ============================================================ */
-function mkCard(ch){
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.tabIndex = 0;
-  card.setAttribute('role','button');
-  card.setAttribute('aria-label', ch.title_ru || ch.title_en || '');
-
-  const img = document.createElement('img');
-  img.src = ch.image || '';
-  img.alt = ch.title_ru || '';
-  img.loading = 'lazy';
-  img.decoding = 'async';
-  card.appendChild(img);
-
-  const h3 = document.createElement('h3');
-  h3.textContent = ch.title_ru || ch.title_en || ch.title_uz || '—';
-  card.appendChild(h3);
-
-  // Клик
-  const handler = () => playerOpen(ch);
-  card.addEventListener('click', handler);
-  card.addEventListener('keydown', e => {
-    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); handler(); }
-  });
-
-  return card;
+/* ===== РЕНДЕР ===== */
+function mkCard(c){
+  var el=document.createElement('div');el.className='card';el.tabIndex=0;el.setAttribute('role','button');
+  var img=document.createElement('img');img.src=c.image||'';img.alt=c.title_ru||'';img.loading='lazy';img.decoding='async';el.appendChild(img);
+  var h3=document.createElement('h3');h3.textContent=c.title_ru||c.title_en||c.title_uz||'—';el.appendChild(h3);
+  el.addEventListener('click',function(){openP(c)});
+  el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openP(c)}});
+  return el;
 }
 
 function render(){
-  $.grid.innerHTML = '';
-  const list = filter();
-  const n = list.length;
-  const words = ['канал','канала','каналов'];
-  const idx = n%100>10 && n%100<14 ? 2 : [0,1,2,2,2][Math.min(n%10,5)];
-  $.gCount.textContent = n + ' ' + words[idx];
-
-  if(!n){
-    $.empty.classList.remove('hidden');
-    return;
-  }
-  $.empty.classList.add('hidden');
-
-  const frag = document.createDocumentFragment();
-  list.forEach(ch => frag.appendChild(mkCard(ch)));
-  $.grid.appendChild(frag);
+  gR.innerHTML='';var list=filter(),n=list.length;
+  var w=['канал','канала','каналов'],i=n%100>10&&n%100<14?2:[0,1,2,2,2][Math.min(n%10,5)];
+  document.getElementById('gC').textContent=n+' '+w[i];
+  if(!n){document.getElementById('ep').classList.remove('hid');return}
+  document.getElementById('ep').classList.add('hid');
+  var f=document.createDocumentFragment();list.forEach(function(c){f.appendChild(mkCard(c))});gR.appendChild(f);
 }
 
-/* ============================================================
-   ТАБЫ
-   ============================================================ */
 function buildTabs(){
-  $.tabs.innerHTML = '';
-  Object.keys(CATS).forEach(name => {
-    const btn = document.createElement('button');
-    btn.className = 'tab' + (name === curTab ? ' active' : '');
-    btn.textContent = name;
-    btn.addEventListener('click', () => {
-      $.tabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      curTab = name;
-      render();
-    });
-    $.tabs.appendChild(btn);
+  var box=document.getElementById('tabs');box.innerHTML='';
+  Object.keys(CATS).forEach(function(name){
+    var b=document.createElement('button');b.className='tab'+(name===tab?' on':'');b.textContent=name;
+    b.addEventListener('click',function(){box.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});b.classList.add('on');tab=name;render()});
+    box.appendChild(b);
   });
 }
 
-/* ============================================================
-   ПЛЕЕР — ПОЛНЫЙ ЭКРАН + HLS + WAKE LOCK
-   ============================================================ */
+/* ===== VIDEO LISTENERS ===== */
+function addVL(e,f){vid.addEventListener(e,f);vl.push([e,f])}
+function rmVL(){vl.forEach(function(v){vid.removeEventListener(v[0],v[1])});vl=[]}
 
-/* Удаляем старые слушатели видео */
-function removeVideoListeners(){
-  videoListeners.forEach(([evt, fn, opts]) => $.video.removeEventListener(evt, fn, opts));
-  videoListeners = [];
-}
+/* ===== CONTROLS ===== */
+function showC(){ctrl.classList.add('on');clearTimeout(ht);ht=setTimeout(function(){ctrl.classList.remove('on')},5000)}
+function hideC(){ctrl.classList.remove('on');clearTimeout(ht)}
 
-/* Добавляем слушатели с трекингом */
-function onVideo(evt, fn, opts){
-  $.video.addEventListener(evt, fn, opts);
-  videoListeners.push([evt, fn, opts]);
-}
+/* ===== WAKE LOCK ===== */
+function lockWk(){try{if('wakeLock'in navigator)navigator.wakeLock.request('screen').then(function(w){wk=w})}catch(e){}}
+function unlkWk(){if(wk){try{wk.release()}catch(e){}wk=null}}
 
-/* Показать / скрыть контролы */
-function showCtrl(){
-  $.ctrl.classList.add('show');
-  clearTimeout(hideTimer);
-  hideTimer = setTimeout(() => $.ctrl.classList.remove('show'), 5000);
-}
-function hideCtrl(){
-  $.ctrl.classList.remove('show');
-  clearTimeout(hideTimer);
-}
+/* ===== FULLSCREEN (СИНХРОННО) ===== */
+function goFS(){try{var el=player;if(el.requestFullscreen)el.requestFullscreen();else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();else if(el.mozRequestFullScreen)el.mozRequestFullScreen();else if(el.msRequestFullscreen)el.msRequestFullscreen()}catch(e){}}
+function exitFS(){try{if(document.fullscreenElement)document.exitFullscreen();else if(document.webkitFullscreenElement)document.webkitExitFullscreen()}catch(e){}}
 
-/* Время */
-function fmt(s){
-  const m = Math.floor(s/60);
-  const sec = Math.floor(s%60);
-  return m + ':' + String(sec).padStart(2,'0');
-}
-
-/* Fullscreen */
-async function goFS(){
-  const target = $.player;
+/* ===== PLAYER ===== */
+function openP(ch){
   try{
-    if(target.requestFullscreen) await target.requestFullscreen();
-    else if(target.webkitRequestFullscreen) await target.webkitRequestFullscreen();
-    else if(target.mozRequestFullScreen) await target.mozRequestFullScreen();
-    else if(target.msRequestFullscreen) await target.msRequestFullscreen();
-  }catch(e){/* заблокировано браузером */}
-}
+    if(hls){hls.destroy();hls=null}
+    rmVL();
+    vid.removeAttribute('src');
+    ctt.textContent=ch.title_ru||ch.title_en||ch.title_uz||'';
+    pB.textContent='⏸';
+    buf.classList.remove('off');
+    tm.textContent='0:00 / 0:00';
 
-function exitFS(){
-  if(!document.fullscreenElement && !document.webkitFullscreenElement) return;
-  try{
-    if(document.exitFullscreen) document.exitFullscreen();
-    else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-  }catch(e){}
-}
+    gw.classList.add('hid');
+    player.classList.add('on');
+    showC();
 
-/* Wake Lock */
-async function lockScreen(){
-  try{
-    if('wakeLock' in navigator){
-      wakeLock = await navigator.wakeLock.request('screen');
+    goFS();
+    lockWk();
+
+    var url=HLS+ch.flusonic_id;
+
+    if(typeof Hls!=='undefined'&&Hls.isSupported()){
+      hls=new Hls({capLevelToPlayerSize:true,maxBufferLength:30,startLevel:-1,enableWorker:true});
+      hls.loadSource(url);hls.attachMedia(vid);
+
+      addVL('playing',function(){pB.textContent='⏸';buf.classList.add('off')});
+      addVL('pause',function(){pB.textContent='▶'});
+      addVL('waiting',function(){buf.classList.remove('off')});
+      addVL('canplay',function(){buf.classList.add('off')});
+      addVL('timeupdate',function(){if(vid.duration&&isFinite(vid.duration))tm.textContent=fmt(vid.currentTime)+' / '+fmt(vid.duration)});
+      addVL('error',function(){buf.classList.add('off');toast('Ошибка видео','er')});
+
+      hls.on(Hls.Events.MANIFEST_PARSED,function(){buf.classList.add('off');vid.play().catch(function(){})});
+      hls.on(Hls.Events.ERROR,function(_,d){
+        if(d.fatal){buf.classList.add('off');
+          if(d.type===Hls.ErrorTypes.NETWORK_ERROR){toast('Нет сети','er');hls.startLoad()}
+          else if(d.type===Hls.ErrorTypes.MEDIA_ERROR){toast('Ошибка медиа','er');hls.recoverMediaError()}
+          else toast('Формат не поддерживается','er')}
+      });
+
+    } else if(vid.canPlayType('application/vnd.apple.mpegurl')){
+      vid.src=url;
+      addVL('loadedmetadata',function(){buf.classList.add('off');vid.play().catch(function(){})});
+      addVL('playing',function(){pB.textContent='⏸';buf.classList.add('off')});
+      addVL('pause',function(){pB.textContent='▶'});
+      addVL('error',function(){buf.classList.add('off');toast('Ошибка видео','er')});
+    } else {
+      buf.classList.add('off');
+      toast('HLS не поддерживается','er');
     }
-  }catch(e){/* отклонено */}
-}
-function unlockScreen(){
-  if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
-}
 
-/* Открыть плеер */
-async function playerOpen(ch){
-  // Очистить предыдущий HLS
-  if(hls){ hls.destroy(); hls = null; }
-  removeVideoListeners();
-
-  // Сброс
-  $.video.src = '';
-  $.video.removeAttribute('src');
-  $.cTitle.textContent = ch.title_ru || ch.title_en || ch.title_uz || '';
-  $.playBtn.textContent = '⏸';
-  $.buffering.classList.remove('hidden');
-  $.cTime.textContent = '0:00 / 0:00';
-
-  // Переключить вид
-  $.gridWrap.classList.add('hidden');
-  $.player.classList.add('open');
-
-  // Показать контролы
-  showCtrl();
-
-  // Wake Lock
-  await lockScreen();
-
-  // Fullscreen
-  await goFS();
-
-  // Стрим
-  const url = HLS_BASE + ch.flusonic_id;
-
-  if(Hls.isSupported()){
-    hls = new Hls({
-      capLevelToPlayerSize: true,
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
-      startLevel: -1,
-      enableWorker: true,
-      lowLatencyMode: false,
-    });
-
-    hls.loadSource(url);
-    hls.attachMedia($.video);
-
-    onVideo('playing', () => { $.playBtn.textContent = '⏸'; $.buffering.classList.add('hidden'); });
-    onVideo('pause', () => { $.playBtn.textContent = '▶'; });
-    onVideo('waiting', () => { $.buffering.classList.remove('hidden'); });
-    onVideo('canplay', () => { $.buffering.classList.add('hidden'); });
-    onVideo('timeupdate', () => {
-      if($.video.duration && isFinite($.video.duration)){
-        $.cTime.textContent = fmt($.video.currentTime) + ' / ' + fmt($.video.duration);
-      }
-    });
-    onVideo('error', () => {
-      $.buffering.classList.add('hidden');
-      toast('Ошибка воспроизведения видео', 'err');
-    });
-
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      $.buffering.classList.add('hidden');
-      $.video.play().catch(() => {});
-    });
-
-    hls.on(Hls.Events.ERROR, (_, data) => {
-      if(data.fatal){
-        $.buffering.classList.add('hidden');
-        if(data.type === Hls.ErrorTypes.NETWORK_ERROR){
-          toast('Ошибка сети. Проверьте интернет.', 'err');
-          hls.startLoad();
-        } else if(data.type === Hls.ErrorTypes.MEDIA_ERROR){
-          toast('Ошибка медиа. Перезапуск…', 'err');
-          hls.recoverMediaError();
-        } else {
-          toast('Неподдерживаемый формат видео', 'err');
-        }
-      }
-    });
-
-  } else if($.video.canPlayType('application/vnd.apple.mpegurl')){
-    // Safari — нативный HLS
-    $.video.src = url;
-    onVideo('loadedmetadata', () => { $.buffering.classList.add('hidden'); $.video.play().catch(()=>{}); });
-    onVideo('playing', () => { $.playBtn.textContent = '⏸'; $.buffering.classList.add('hidden'); });
-    onVideo('pause', () => { $.playBtn.textContent = '▶'; });
-    onVideo('waiting', () => { $.buffering.classList.remove('hidden'); });
-    onVideo('canplay', () => { $.buffering.classList.remove('hidden'); });
-    onVideo('timeupdate', () => {
-      if($.video.duration && isFinite($.video.duration)){
-        $.cTime.textContent = fmt($.video.currentTime) + ' / ' + fmt($.video.duration);
-      }
-    });
-    onVideo('error', () => {
-      $.buffering.classList.add('hidden');
-      toast('Ошибка воспроизведения', 'err');
-    });
-  } else {
-    $.buffering.classList.add('hidden');
-    toast('HLS не поддерживается в этом браузере', 'err');
-  }
-
-  // Скролл вверх
-  window.scrollTo(0, 0);
+    window.scrollTo(0,0);
+  }catch(e){console.error('[P]',e);buf.classList.add('off');toast('Ошибка: '+e.message,'er')}
 }
 
-/* Выйти из плеера */
-function playerExit(){
-  // Остановить HLS
-  if(hls){ hls.destroy(); hls = null; }
-  removeVideoListeners();
-
-  // Остановить видео
-  $.video.pause();
-  $.video.removeAttribute('src');
-  $.video.load();
-  $.buffering.classList.add('hidden');
-
-  // Скрыть плеер
-  $.player.classList.remove('open');
-  $.gridWrap.classList.remove('hidden');
-
-  // Fullscreen → normal
-  exitFS();
-
-  // Wake Lock → off
-  unlockScreen();
-
-  // Спрятать контролы
-  hideCtrl();
+function closeP(){
+  if(hls){hls.destroy();hls=null}
+  rmVL();
+  vid.pause();vid.removeAttribute('src');vid.load();
+  buf.classList.add('off');
+  player.classList.remove('on');
+  gw.classList.remove('hid');
+  exitFS();unlkWk();hideC();
 }
 
-/* Play / Pause */
-function togglePlay(){
-  if(!$.video.src) return;
-  if($.video.paused){
-    $.video.play().catch(()=>{});
-  } else {
-    $.video.pause();
-  }
-  showCtrl();
+function togPlay(){
+  if(!vid.src)return;
+  if(vid.paused)vid.play().catch(function(){});else vid.pause();
+  showC();
 }
 
-/* ============================================================
-   СОБЫТИЯ
-   ============================================================ */
+/* ===== EVENTS ===== */
+document.getElementById('inp').addEventListener('input',function(){var t;clearTimeout(t);t=setTimeout(function(){srch=document.getElementById('inp').value;render()},200)});
+document.getElementById('erB').addEventListener('click',go);
+document.getElementById('cX').addEventListener('click',closeP);
+document.getElementById('bB').addEventListener('click',closeP);
+document.getElementById('pB').addEventListener('click',togPlay);
 
-// Поиск (debounce)
-let searchTimer;
-$.search.addEventListener('input', () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    curSearch = $.search.value;
-    render();
-  }, 200);
+document.getElementById('player').addEventListener('click',function(e){
+  if(!player.classList.contains('on'))return;
+  if(e.target.tagName==='BUTTON')return;
+  if(ctrl.classList.contains('on'))hideC();else showC();
 });
 
-// Retry
-$.retry.addEventListener('click', init);
+document.addEventListener('mousemove',function(){if(player.classList.contains('on'))showC()});
+document.addEventListener('touchstart',function(){if(player.classList.contains('on'))showC()},{passive:true});
 
-// Кнопки плеера
-$.closeBtn.addEventListener('click', playerExit);
-$.backBtn.addEventListener('click', playerExit);
-$.playBtn.addEventListener('click', togglePlay);
-
-// Клик по видео → показать/скрыть контролы
-$.videoWrap.addEventListener('click', e => {
-  if(!$.player.classList.contains('open')) return;
-  // Не реагировать на клики по кнопкам
-  if(e.target.closest('button') || e.target.closest('.ctrl')) return;
-  if($.ctrl.classList.contains('show')) hideCtrl();
-  else showCtrl();
+document.addEventListener('keydown',function(e){
+  if(!player.classList.contains('on'))return;
+  if(e.key==='Escape')closeP();
+  if(e.key===' '){e.preventDefault();togPlay()}
+  if(e.key==='f'||e.key==='F')goFS();
 });
 
-// Тач / движение мыши → показать контролы
-const activityHandler = () => {
-  if($.player.classList.contains('open')) showCtrl();
-};
-document.addEventListener('mousemove', activityHandler);
-document.addEventListener('touchstart', activityHandler, {passive:true});
+document.getElementById('logo').addEventListener('click',function(e){e.preventDefault();if(player.classList.contains('on'))closeP()});
 
-// Клавиши
-document.addEventListener('keydown', e => {
-  if($.player.classList.contains('open')){
-    if(e.key === 'Escape') playerExit();
-    if(e.key === ' '){ e.preventDefault(); togglePlay(); }
-    if(e.key === 'f' || e.key === 'F') goFS();
-  }
-});
-
-// Клик по логотипу → выйти из плеера
-$.logoLink.addEventListener('click', e => {
-  e.preventDefault();
-  if($.player.classList.contains('open')) playerExit();
-});
-
-// Fullscreen change
-document.addEventListener('fullscreenchange', () => {});
-document.addEventListener('webkitfullscreenchange', () => {});
-
-/* ============================================================
-   INIT
-   ============================================================ */
-function setLoad(on){
-  $.loader.classList.toggle('hidden', !on);
-  if(on){
-    $.err.classList.add('hidden');
-    $.cont.classList.add('hidden');
-    $.empty.classList.add('hidden');
-  }
+/* ===== INIT ===== */
+function go(){
+  document.getElementById('ld').classList.remove('hid');
+  document.getElementById('er').classList.add('hid');
+  document.getElementById('cb').classList.add('hid');
+  document.getElementById('ep').classList.add('hid');
+  loadData().then(function(d){
+    chs=d;
+    document.getElementById('ld').classList.add('hid');
+    document.getElementById('cb').classList.remove('hid');
+    buildTabs();render();
+  }).catch(function(e){
+    console.error(e);
+    document.getElementById('ld').classList.add('hid');
+    document.getElementById('er').classList.remove('hid');
+    document.getElementById('erM').textContent=e.message||'Ошибка';
+  });
 }
 
-function setErr(msg){
-  setLoad(false);
-  $.err.classList.remove('hidden');
-  $.errMsg.textContent = msg;
-}
-
-async function init(){
-  setLoad(true);
-  try{
-    channels = await loadData();
-    setLoad(false);
-    $.cont.classList.remove('hidden');
-    buildTabs();
-    render();
-  }catch(e){
-    console.error('[SalomTV]', e);
-    setLoad(false);
-    setErr(e.message || 'Неизвестная ошибка');
-  }
-}
-
-/* СТАРТ */
 buildTabs();
-if(document.readyState !== 'loading') init();
-else document.addEventListener('DOMContentLoaded', init);
+if(document.readyState!=='loading')go();else document.addEventListener('DOMContentLoaded',go);
 
 })();
 </script>
