@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Salom TV</title>
+<meta rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5/dist/hls.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{font-family:Inter,sans-serif;background:#070714;color:#ecedf2;min-height:100dvh;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 50% at 50%-15%,rgba(124,101,240,.18),transparent 65%),radial-gradient(ellipse 30% 35% at 5%85%,rgba(94,234,212,.06),transparent 50%);pointer-events:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px}
+*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08)transparent}
+
+/* ===== HEADER ===== */
+.header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);border:1px solid rgba(255,255,255,.08);border-radius:32px;position:sticky;top:clamp(8px,1.5vw,24px);z-index:100;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:900;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:-.04em;background:linear-gradient(135deg,#fff 35%,#5eead4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.logo span{-webkit-text-fill-color:initial;font-size:1.2em}
+
+/* ===== TABS ===== */
+.tabs{display:flex;flex-wrap:wrap;gap:3px;flex:1;min-width:160px;justify-content:center}
+.tab{padding:6px 14px;border:none;border-radius:99px;background:transparent;color:#8888a0;font:600 clamp(.65rem,.8vw,.75rem)/1.3 Inter,sans-serif;cursor:pointer;white-space:nowrap;transition:.12s}
+.tab:hover{color:#ecedf2;background:rgba(255,255,255,.05)}
+.tab.active{background:linear-gradient(135deg,#7c65f0,#8a70ef);color:#fff;box-shadow:0 3px 14px rgba(124,101,240,.35)}
+
+/* ===== SEARCH ===== */
+.search{position:relative;flex:1;min-width:120px;max-width:300px}
+.search input{width:100%;padding:7px 10px 7px 32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:99px;color:#ecedf2;font-size:.82rem;outline:none;transition:.12s}
+.search input::placeholder{color:#8888a0}
+.search input:focus{border-color:#7c65f0;background:rgba(255,255,255,.07)}
+.search::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;opacity:.4;pointer-events:none}
+
+/* ===== MAIN ===== */
+.main{max-width:1920px;margin:0 auto;padding:clamp(8px,1.5vw,24px)}
+
+/* ===== GRID ===== */
+.grid-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.grid-head h2{font-size:clamp(.8rem,1.1vw,1.05rem);font-weight:700;color:#8888a0;letter-spacing:-.02em}
+.grid-head span{font-size:clamp(.6rem,.8vw,.7rem);color:rgba(255,255,255,.2)}
+
+.grid{display:grid;grid-template-columns:repeat(var(--cols,5),1fr);gap:clamp(8px,1.2vw,20px)}
+
+/* ===== CARD ===== */
+.card{display:flex;flex-direction:column;border-radius:24px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.005));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .3s,border-color .3s}
+.card:hover{transform:translateY(-5px) scale(1.015);border-color:rgba(255,255,255,.16)}
+.card:active{transform:scale(.97)}
+
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:rgba(0,0,0,.3);transition:transform .4s}
+.card:hover img{transform:scale(1.05)}
+
+.card h3{padding:10px 13px 13px;font-size:clamp(.72rem,.9vw,.82rem);font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== LOADER ===== */
+.loader{display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:center;min-height:240px}
+.loader .spin{width:36px;height:36px;border:3px solid rgba(255,255,255,.05);border-top-color:#7c65f0;border-radius:50%;animation:spin .7s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{font-size:.82rem;color:#8888a0;font-weight:500}
+
+.state{text-align:center;padding:40px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04)}
+.state p{color:#8888a0;font-size:.86rem;margin:8px 0 14px}
+.state button{padding:8px 22px;border:none;border-radius:99px;background:#7c65f0;color:#fff;font:600 .8rem Inter,sans-serif;cursor:pointer}
+
+/* ===== PLAYER FULLSCREEN ===== */
+.player{display:none;position:fixed;inset:0;z-index:1000;background:#000;flex-direction:column}
+.player.open{display:flex}
+.player video{width:100%;height:100%;object-fit:contain;background:#000}
+
+/* Controls overlay */
+.ctrl{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transition:opacity .3s;pointer-events:none}
+.ctrl.show{opacity:1;pointer-events:auto}
+
+.ctrl-top{display:flex;align-items:center;gap:14px;padding:20px 24px;background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent)}
+.ctrl-top span{flex:1;font-weight:700;font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctrl-top button{width:38px;height:38px;border:none;border-radius:99px;background:rgba(255,255,255,.08);color:#fff;font-size:1.1rem;cursor:pointer;transition:.15s;flex-shrink:0}
+.ctrl-top button:hover{background:rgba(255,90,110,.4);transform:rotate(90deg)}
+
+.ctrl-bot{display:flex;align-items:center;gap:12px;padding:20px 24px;background:linear-gradient(to top,rgba(0,0,0,.85),transparent)}
+.ctrl-bot button{padding:10px 18px;border:none;border-radius:99px;background:rgba(255,255,255,.06);color:#fff;font:600 .82rem Inter,sans-serif;cursor:pointer;transition:.15s}
+.ctrl-bot button:hover{background:rgba(255,255,255,.14)}
+.ctrl-bot .back{padding:10px 20px;background:linear-gradient(135deg,#7c65f0,#6d54e0);box-shadow:0 4px 16px rgba(124,101,240,.25)}
+.ctrl-bot .back:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,101,240,.35)}
+.ctrl-bot .time{color:rgba(255,255,255,.6);font-size:.75rem;font-variant-numeric:tabular-nums;margin-left:auto}
+
+/* Toast */
+.toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px}
+.toast{padding:10px 18px;border-radius:10px;background:rgba(10,10,24,.92);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);color:#ecedf2;font-size:.78rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .3s}
+.toast.err{border-left:3px solid #ff5a6e}
+@keyframes fade{from{opacity:0;transform:translateY(12px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
+
+.hidden{display:none!important}
+
+@media(max-width:600px){:root{--cols:1}.header{flex-direction:column;padding:10px 14px}.tabs{flex-wrap:nowrap;overflow-x:auto}.tab{padding:5px 11px;font-size:.68rem}.search{min-width:100%;max-width:none}}
+@media(min-width:601px)and(max-width:1024px){:root{--cols:3}}
+@media(min-width:1025px)and(max-width:1920px){:root{--cols:5}}
+@media(min-width:1921px){:root{--cols:6}body{font-size:17px}}
+</style>
+</head>
+<body>
+
+<div class="main">
+
+<header class="header">
+  <a href="#" class="logo" onclick="P.exit(event)" tabindex="-1"><span>📺</span> Salom TV</a>
+  <div class="tabs" id="tabs"></div>
+  <div class="search"><input type="search" id="search" placeholder="Поиск" autocomplete="off"></div>
+</header>
+
+<!-- PLAYER -->
+<div class="player" id="player">
+  <video id="video" playsinline crossorigin="anonymous"></video>
+  <div class="ctrl" id="ctrl">
+    <div class="ctrl-top">
+      <span id="cTitle">—</span>
+      <button onclick="P.exit()">✕</button>
+    </div>
+    <div class="ctrl-bot">
+      <button id="playBtn" onclick="P.play()">▶</button>
+      <button class="back" onclick="P.exit()">← Назад</button>
+      <span class="time" id="cTime">0:00 / 0:00</span>
+    </div>
+  </div>
+</div>
+
+<!-- CHANNELS -->
+<div id="gridWrap">
+  <div class="loader" id="loader">
+    <div class="spin"></div>
+    <p>Загружаем каналы…</p>
+  </div>
+  <div class="state hidden" id="errorBlock">
+    <p id="errorMsg">Не удалось загрузить каналы</p>
+    <button id="retryBtn" onclick="init()">Повторить</button>
+  </div>
+  <div class="hidden" id="contentBlock">
+    <div class="grid-head">
+      <h2 id="gridTitle">Все каналы</h2>
+      <span id="gridCount"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="state hidden" id="emptyBlock"><p>Ничего не найдено</p></div>
+</div>
+
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ===== Salom TV ===== */
+
+const API = 'https://spectator-api.salomtv.uz/v1/tv/channel';
+const HLS_BASE = 'https://link.salomtv.uz/playlist.m3u8?channel_id=';
+
+const CATS = {
+  'Все':null,
+  'Развлекательные':['42f8a6fe','0d99c22c','862b68e6','9ac059cb'],
+  'Новостные':['0318abfe'],
+  'Спортивные':['2b25b899'],
+  'Детские':null,
+  'Музыкальные':null,
+  'Познавательные':['8c396b35','862b68e6'],
+};
+const KW = {
+  'Детские':['детск','kids','baby','malysh','cartoon','mult','children','disney','nick'],
+  'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio'],
+};
+
+let channels = [];
+let tab = 'Все';
+let search = '';
+let hls = null;
+let wake = null;
+let ct = null;
+
+/* DOM */
+const $ = id => document.getElementById(id);
+const D = {
+  tabs:$('tabs'), loader:$('loader'), err:$('errorBlock'), errMsg:$('errorMsg'),
+  cont:$('contentBlock'), gTitle:$('gridTitle'), gCount:$('gridCount'), grid:$('grid'),
+  empty:$('emptyBlock'), player:$('player'), video:$('video'), ctrl:$('ctrl'),
+  cTitle:$('cTitle'), cTime:$('cTime'), playBtn:$('playBtn'), search:$('search'),
+  gridWrap:$('gridWrap'),
+};
+
+/* Toast */
+function toast(m,t){const e=document.createElement('div');e.className='toast'+(t?' '+t:'');e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>e.remove(),3500)}
+
+/* Load data */
+async function load(){
+  const r = await fetch(API,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(10000)});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const d = await r.json();
+  if(!d.tv_channels?.length) throw new Error('Нет каналов');
+  return d.tv_channels;
+}
+
+/* Filter */
+function filter(){
+  let list = channels;
+  if(tab!=='Все'){
+    const ids = CATS[tab], kws = KW[tab]||[];
+    if(ids?.length) list = list.filter(c=>(c.category_ids||[]).some(id=>ids.some(i=>id.includes(i))));
+    if(kws.length){const kl=kws.map(k=>k.toLowerCase());list=list.filter(c=>kl.some(k=>(c.title_ru||c.title_en||c.title_uz||'').toLowerCase().includes(k)))}
+  }
+  const q = search.trim().toLowerCase();
+  if(q) list = list.filter(c=>(c.title_ru||c.title_en||c.title_uz||'').toLowerCase().includes(q));
+  return list;
+}
+
+/* Render cards */
+function mkCard(c){
+  const el = document.createElement('div'); el.className = 'card';
+  const img = document.createElement('img'); img.src = c.image||''; img.alt = c.title_ru||'';
+  img.loading = 'lazy';
+  el.appendChild(img);
+  const h3 = document.createElement('h3'); h3.textContent = c.title_ru||c.title_en||c.title_uz||'—';
+  el.appendChild(h3);
+  el.addEventListener('click',()=>open(c));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(c)}});
+  el.tabIndex = 0; el.setAttribute('role','button');
+  return el;
+}
+
+function render(){
+  D.grid.innerHTML = ''; const list = filter(), n = list.length;
+  D.gCount.textContent = n+' '+['канал','канала','каналов'][n%100>10&&n%100<20?2:[0,1,2,2,2][Math.min(n%10,5)]];
+  if(!n){D.empty.classList.remove('hidden');return}
+  D.empty.classList.add('hidden');
+  const f = document.createDocumentFragment(); list.forEach(c=>f.appendChild(mkCard(c))); D.grid.appendChild(f);
+}
+
+/* Tabs */
+function buildTabs(){
+  D.tabs.innerHTML = '';
+  Object.keys(CATS).forEach(name=>{
+    const b = document.createElement('button'); b.className='tab'+(name===tab?' active':'');
+    b.textContent = name;
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      b.classList.add('active'); tab=name; render();
+    });
+    D.tabs.appendChild(b);
+  });
+}
+
+/* ===== PLAYER ===== */
+const P = {
+  async open(ch){
+    if(hls){hls.destroy();hls=null}
+    D.video.src = '';
+    D.cTitle.textContent = ch.title_ru||ch.title_en||ch.title_uz||'';
+    D.playBtn.textContent = '▶';
+    D.player.classList.add('open');
+    D.gridWrap.classList.add('hidden');
+    P.showCtrl();
+
+    // Wake Lock
+    try{if(navigator.wakeLock) wake = await navigator.wakeLock.request('screen')}catch(e){}
+
+    // Fullscreen
+    try{
+      const el = D.player;
+      if(el.requestFullscreen) await el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }catch(e){}
+
+    // Load HLS
+    const url = HLS_BASE + ch.flusonic_id;
+    if(Hls.isSupported()){
+      hls = new Hls({capLevelToPlayerSize:true,maxBufferLength:30});
+      hls.loadSource(url);
+      hls.attachMedia(D.video);
+      hls.on(Hls.Events.MANIFEST_PARSED,()=>D.video.play().catch(()=>{}));
+      hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)toast('Ошибка видео','err')});
+    } else if(D.video.canPlayType('application/vnd.apple.mpegurl')){
+      D.video.src = url;
+      D.video.addEventListener('loadedmetadata',()=>D.video.play().catch(()=>{}));
+    } else toast('HLS не поддерживается','err');
+
+    D.video.addEventListener('play',()=>{D.playBtn.textContent='⏸'});
+    D.video.addEventListener('pause',()=>{D.playBtn.textContent='▶'});
+    D.video.addEventListener('timeupdate',()=>{
+      if(!D.video.duration) return;
+      const f=s=>{const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+String(sec).padStart(2,'0')};
+      D.cTime.textContent = f(D.video.currentTime||0)+' / '+f(D.video.duration||0);
+    });
+  },
+
+  exit(e){
+    if(e)e.preventDefault();
+    if(hls){hls.destroy();hls=null}
+    D.video.pause(); D.video.src=''; D.video.load();
+    D.player.classList.remove('open');
+    D.gridWrap.classList.remove('hidden');
+    if(wake){wake.release();wake=null}
+    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    P.hideCtrl();
+  },
+
+  play(){
+    if(!D.video.src) return;
+    if(D.video.paused) D.video.play().catch(()=>{});
+    else D.video.pause();
+  },
+
+  showCtrl(){
+    D.ctrl.classList.add('show');
+    clearTimeout(ct);
+    ct = setTimeout(()=>D.ctrl.classList.remove('show'), 5000);
+  },
+
+  hideCtrl(){D.ctrl.classList.remove('show');clearTimeout(ct)},
+};
+
+window.P = P;
+
+/* Init */
+async function init(){
+  D.loader.classList.remove('hidden');
+  D.err.classList.add('hidden');
+  D.cont.classList.add('hidden');
+  D.empty.classList.add('hidden');
+  try{
+    channels = await load();
+    D.loader.classList.add('hidden');
+    D.cont.classList.remove('hidden');
+    render();
+  }catch(e){
+    console.error(e);
+    D.loader.classList.add('hidden');
+    D.err.classList.remove('hidden');
+    D.errMsg.textContent = e.message||'Ошибка загрузки';
+  }
+}
+
+/* Events */
+buildTabs();
+D.search.addEventListener('input',()=>{clearTimeout(window._st);window._st=setTimeout(()=>{search=D.search.value;render()},200)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&D.player.classList.contains('open'))P.exit()});
+document.addEventListener('mousemove',()=>{if(D.player.classList.contains('open'))P.showCtrl()});
+D.video.addEventListener('click',()=>{if(D.player.classList.contains('open')){if(D.ctrl.classList.contains('show'))P.hideCtrl();else P.showCtrl()}});
+
+if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
