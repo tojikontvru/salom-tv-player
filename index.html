@@ -2,145 +2,298 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Salom TV</title>
-<meta rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+<title>Salom TV — смотри каналы</title>
+<meta name="theme-color" content="#070714">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5/dist/hls.min.js"></script>
+
+<!-- HLS.js — стабильная версия -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+
 <style>
+/* ============================================================
+   Salom TV — Glassmorphism + Fullscreen Player
+   Все устройства: Phone → Tablet → Desktop → TV → Smart TV
+   ============================================================ */
 *{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px}
-body{font-family:Inter,sans-serif;background:#070714;color:#ecedf2;min-height:100dvh;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 50% at 50%-15%,rgba(124,101,240,.18),transparent 65%),radial-gradient(ellipse 30% 35% at 5%85%,rgba(94,234,212,.06),transparent 50%);pointer-events:none}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+
+:root{
+  --bg:#070714;
+  --accent:#7c65f0;
+  --accent2:#5eead4;
+  --text:#ecedf2;
+  --text2:#8888a0;
+  --border:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.04);
+}
+
+body{
+  font-family:Inter,system-ui,sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+/* Фон */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -15%,rgba(124,101,240,.18),transparent 65%),
+    radial-gradient(ellipse 30% 35% at 5% 85%,rgba(94,234,212,.06),transparent 50%);
+  pointer-events:none;
+}
+
+/* Скролл */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px}
 *{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08)transparent}
 
-/* ===== HEADER ===== */
-.header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);border:1px solid rgba(255,255,255,.08);border-radius:32px;position:sticky;top:clamp(8px,1.5vw,24px);z-index:100;margin-bottom:16px}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:900;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:-.04em;background:linear-gradient(135deg,#fff 35%,#5eead4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+/* ==================== HEADER ==================== */
+.header{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  padding:12px 20px;
+  background:linear-gradient(135deg,rgba(255,255,255,.04),var(--glass));
+  backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);
+  border:1px solid var(--border);border-radius:32px;
+  position:sticky;top:clamp(8px,1.5vw,24px);z-index:100;
+}
+.logo{
+  display:flex;align-items:center;gap:8px;text-decoration:none;
+  font-weight:900;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:-.04em;
+  background:linear-gradient(135deg,#fff 35%,var(--accent2));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  flex-shrink:0;
+}
 .logo span{-webkit-text-fill-color:initial;font-size:1.2em}
 
-/* ===== TABS ===== */
+/* ==================== TABS ==================== */
 .tabs{display:flex;flex-wrap:wrap;gap:3px;flex:1;min-width:160px;justify-content:center}
-.tab{padding:6px 14px;border:none;border-radius:99px;background:transparent;color:#8888a0;font:600 clamp(.65rem,.8vw,.75rem)/1.3 Inter,sans-serif;cursor:pointer;white-space:nowrap;transition:.12s}
-.tab:hover{color:#ecedf2;background:rgba(255,255,255,.05)}
-.tab.active{background:linear-gradient(135deg,#7c65f0,#8a70ef);color:#fff;box-shadow:0 3px 14px rgba(124,101,240,.35)}
+.tab{
+  padding:6px 14px;border:none;border-radius:99px;background:transparent;
+  color:var(--text2);font:600 clamp(.65rem,.8vw,.75rem)/1.3 Inter,sans-serif;
+  cursor:pointer;white-space:nowrap;transition:.12s;
+  -webkit-tap-highlight-color:transparent;user-select:none;
+}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.tab:active{transform:scale(.95)}
+.tab.active{
+  background:linear-gradient(135deg,var(--accent),#8a70ef);color:#fff;
+  box-shadow:0 3px 14px rgba(124,101,240,.35);
+}
 
-/* ===== SEARCH ===== */
+/* ==================== SEARCH ==================== */
 .search{position:relative;flex:1;min-width:120px;max-width:300px}
-.search input{width:100%;padding:7px 10px 7px 32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:99px;color:#ecedf2;font-size:.82rem;outline:none;transition:.12s}
-.search input::placeholder{color:#8888a0}
-.search input:focus{border-color:#7c65f0;background:rgba(255,255,255,.07)}
+.search input{
+  width:100%;padding:7px 10px 7px 32px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:99px;color:var(--text);font-size:.82rem;outline:none;transition:.12s;
+  -webkit-appearance:none;
+}
+.search input::placeholder{color:var(--text2)}
+.search input:focus{border-color:var(--accent);background:rgba(255,255,255,.07)}
 .search::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;opacity:.4;pointer-events:none}
 
-/* ===== MAIN ===== */
+/* ==================== MAIN ==================== */
 .main{max-width:1920px;margin:0 auto;padding:clamp(8px,1.5vw,24px)}
 
-/* ===== GRID ===== */
+/* ==================== GRID ==================== */
 .grid-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.grid-head h2{font-size:clamp(.8rem,1.1vw,1.05rem);font-weight:700;color:#8888a0;letter-spacing:-.02em}
+.grid-head h2{font-size:clamp(.8rem,1.1vw,1.05rem);font-weight:700;color:var(--text2);letter-spacing:-.02em}
 .grid-head span{font-size:clamp(.6rem,.8vw,.7rem);color:rgba(255,255,255,.2)}
 
 .grid{display:grid;grid-template-columns:repeat(var(--cols,5),1fr);gap:clamp(8px,1.2vw,20px)}
 
-/* ===== CARD ===== */
-.card{display:flex;flex-direction:column;border-radius:24px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.005));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .3s,border-color .3s}
-.card:hover{transform:translateY(-5px) scale(1.015);border-color:rgba(255,255,255,.16)}
+/* ==================== CARD ==================== */
+.card{
+  display:flex;flex-direction:column;border-radius:24px;overflow:hidden;cursor:pointer;
+  border:1px solid var(--border);
+  background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.005));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:transform .3s,border-color .3s;
+  -webkit-tap-highlight-color:transparent;
+}
+@media(hover:hover){.card:hover{transform:translateY(-5px) scale(1.015);border-color:rgba(255,255,255,.16)}.card:hover img{transform:scale(1.05)}}
 .card:active{transform:scale(.97)}
 
 .card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:rgba(0,0,0,.3);transition:transform .4s}
-.card:hover img{transform:scale(1.05)}
-
 .card h3{padding:10px 13px 13px;font-size:clamp(.72rem,.9vw,.82rem);font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ===== LOADER ===== */
+/* ==================== LOADER ==================== */
 .loader{display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:center;min-height:240px}
-.loader .spin{width:36px;height:36px;border:3px solid rgba(255,255,255,.05);border-top-color:#7c65f0;border-radius:50%;animation:spin .7s linear}
+.loader .spin{width:36px;height:36px;border:3px solid rgba(255,255,255,.05);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loader p{font-size:.82rem;color:#8888a0;font-weight:500}
+.loader p{font-size:.82rem;color:var(--text2);font-weight:500}
 
-.state{text-align:center;padding:40px 20px;border-radius:24px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04)}
-.state p{color:#8888a0;font-size:.86rem;margin:8px 0 14px}
-.state button{padding:8px 22px;border:none;border-radius:99px;background:#7c65f0;color:#fff;font:600 .8rem Inter,sans-serif;cursor:pointer}
+.state{text-align:center;padding:40px 20px;border-radius:24px;border:1px solid var(--border);background:var(--glass)}
+.state p{color:var(--text2);font-size:.86rem;margin:8px 0 14px;max-width:400px;margin-left:auto;margin-right:auto}
+.state button{padding:8px 22px;border:none;border-radius:99px;background:var(--accent);color:#fff;font:600 .8rem Inter,sans-serif;cursor:pointer;transition:.12s}
+.state button:hover{box-shadow:0 0 16px rgba(124,101,240,.25)}
+.state--err{border-color:rgba(255,90,110,.2)}
 
-/* ===== PLAYER FULLSCREEN ===== */
-.player{display:none;position:fixed;inset:0;z-index:1000;background:#000;flex-direction:column}
+/* ==================== PLAYER (fullscreen) ==================== */
+.player{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:#000;flex-direction:column;
+  -webkit-user-select:none;user-select:none;
+}
 .player.open{display:flex}
-.player video{width:100%;height:100%;object-fit:contain;background:#000}
 
-/* Controls overlay */
-.ctrl{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transition:opacity .3s;pointer-events:none}
+.video-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.player video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+
+/* Буферизация */
+.buffering{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:44px;height:44px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite;z-index:1;pointer-events:none;
+}
+.buffering.hidden{display:none}
+
+/* Контролы */
+.ctrl{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;justify-content:space-between;
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
 .ctrl.show{opacity:1;pointer-events:auto}
 
-.ctrl-top{display:flex;align-items:center;gap:14px;padding:20px 24px;background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent)}
+.ctrl-top{
+  display:flex;align-items:center;gap:14px;padding:20px 24px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.88) 0%,rgba(0,0,0,.4) 60%,transparent 100%);
+}
 .ctrl-top span{flex:1;font-weight:700;font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctrl-top button{width:38px;height:38px;border:none;border-radius:99px;background:rgba(255,255,255,.08);color:#fff;font-size:1.1rem;cursor:pointer;transition:.15s;flex-shrink:0}
-.ctrl-top button:hover{background:rgba(255,90,110,.4);transform:rotate(90deg)}
+.ctrl-close{
+  width:38px;height:38px;border:none;border-radius:99px;
+  background:rgba(255,255,255,.1);backdrop-filter:blur(8px);
+  color:#fff;font-size:1.1rem;cursor:pointer;transition:.15s;flex-shrink:0;
+}
+.ctrl-close:hover{background:rgba(255,90,110,.4);transform:rotate(90deg)}
 
-.ctrl-bot{display:flex;align-items:center;gap:12px;padding:20px 24px;background:linear-gradient(to top,rgba(0,0,0,.85),transparent)}
-.ctrl-bot button{padding:10px 18px;border:none;border-radius:99px;background:rgba(255,255,255,.06);color:#fff;font:600 .82rem Inter,sans-serif;cursor:pointer;transition:.15s}
-.ctrl-bot button:hover{background:rgba(255,255,255,.14)}
-.ctrl-bot .back{padding:10px 20px;background:linear-gradient(135deg,#7c65f0,#6d54e0);box-shadow:0 4px 16px rgba(124,101,240,.25)}
-.ctrl-bot .back:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,101,240,.35)}
+.ctrl-bot{
+  display:flex;align-items:center;gap:12px;padding:20px 24px;
+  background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.4) 60%,transparent 100%);
+}
+.ctrl-bot .btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 18px;border:none;border-radius:99px;
+  background:rgba(255,255,255,.08);backdrop-filter:blur(8px);
+  color:#fff;font:600 .82rem/1 Inter,sans-serif;cursor:pointer;transition:.15s;
+}
+.ctrl-bot .btn:active{transform:scale(.95)}
+.ctrl-bot .btn-back{
+  background:linear-gradient(135deg,var(--accent),#6d54e0);
+  box-shadow:0 4px 16px rgba(124,101,240,.25);
+}
+.ctrl-bot .btn-back:active{transform:scale(.95)}
 .ctrl-bot .time{color:rgba(255,255,255,.6);font-size:.75rem;font-variant-numeric:tabular-nums;margin-left:auto}
 
-/* Toast */
+/* ==================== TOAST ==================== */
 .toasts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px}
-.toast{padding:10px 18px;border-radius:10px;background:rgba(10,10,24,.92);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);color:#ecedf2;font-size:.78rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .3s}
+.toast{padding:10px 18px;border-radius:10px;background:rgba(10,10,24,.92);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--text);font-size:.78rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fade .3s;max-width:calc(100vw - 40px)}
 .toast.err{border-left:3px solid #ff5a6e}
 @keyframes fade{from{opacity:0;transform:translateY(12px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
 
 .hidden{display:none!important}
 
-@media(max-width:600px){:root{--cols:1}.header{flex-direction:column;padding:10px 14px}.tabs{flex-wrap:nowrap;overflow-x:auto}.tab{padding:5px 11px;font-size:.68rem}.search{min-width:100%;max-width:none}}
-@media(min-width:601px)and(max-width:1024px){:root{--cols:3}}
+/* ==================== RESPONSIVE ==================== */
+
+/* Phones */
+@media(max-width:600px){
+  :root{--cols:1}
+  .header{flex-direction:column;padding:10px 14px;gap:8px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:3px;padding:2px 0}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:5px 11px;font-size:.68rem;flex-shrink:0}
+  .search{min-width:100%;max-width:none}
+  .ctrl-top{padding:clamp(12px,3vw,20px) clamp(12px,3vw,20px)}
+  .ctrl-top span{font-size:clamp(.9rem,4vw,1.3rem)}
+  .ctrl-bot{padding:clamp(12px,3vw,20px) clamp(12px,3vw,20px)}
+  .ctrl-bot .btn{padding:8px 14px;font-size:.72rem}
+  .ctrl-close{width:34px;height:34px}
+}
+
+/* Tablets */
+@media(min-width:601px)and(max-width:1024px){:root{--cols:3}.tabs{min-width:100%}}
+
+/* Desktop */
 @media(min-width:1025px)and(max-width:1920px){:root{--cols:5}}
-@media(min-width:1921px){:root{--cols:6}body{font-size:17px}}
+
+/* 4K / TV */
+@media(min-width:1921px){
+  :root{--cols:6}
+  .card img{aspect-ratio:21/9}
+  .grid{gap:26px}
+  body{font-size:18px}
+  .ctrl-top span{font-size:2rem}
+}
+
+/* Smart TV 4K+ */
+@media(min-width:2560px){:root{--cols:7}.main{max-width:2200px}}
+
+/* Tablet portrait */
+@media(max-width:768px)and(orientation:portrait){.tabs{min-width:100%}}
+
+/* Small phones */
+@media(max-width:380px){.tab{padding:4px 9px;font-size:.62rem}}
+
+/* Touch devices — убираем hover */
+@media(hover:none){
+  .card:hover{transform:none;border-color:var(--border)}
+  .card:hover img{transform:none}
+}
+
+/* Safe area (iPhone notch) */
+@supports(padding-top:env(safe-area-inset-top)){
+  .header{padding-top:calc(12px + env(safe-area-inset-top))}
+  .ctrl-bot{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body>
 
 <div class="main">
 
+<!-- HEADER -->
 <header class="header">
-  <a href="#" class="logo" onclick="P.exit(event)" tabindex="-1"><span>📺</span> Salom TV</a>
+  <a href="#" class="logo" id="logoLink"><span>📺</span> Salom TV</a>
   <div class="tabs" id="tabs"></div>
-  <div class="search"><input type="search" id="search" placeholder="Поиск" autocomplete="off"></div>
+  <div class="search"><input type="search" id="search" placeholder="Поиск" autocomplete="off" enterkeyhint="search"></div>
 </header>
 
-<!-- PLAYER -->
+<!-- PLAYER (весь экран) -->
 <div class="player" id="player">
-  <video id="video" playsinline crossorigin="anonymous"></video>
-  <div class="ctrl" id="ctrl">
-    <div class="ctrl-top">
-      <span id="cTitle">—</span>
-      <button onclick="P.exit()">✕</button>
-    </div>
-    <div class="ctrl-bot">
-      <button id="playBtn" onclick="P.play()">▶</button>
-      <button class="back" onclick="P.exit()">← Назад</button>
-      <span class="time" id="cTime">0:00 / 0:00</span>
+  <div class="video-wrap" id="videoWrap">
+    <video id="video" playsinline preload="none"></video>
+    <div class="buffering hidden" id="buffering"></div>
+    <div class="ctrl" id="ctrl">
+      <div class="ctrl-top">
+        <span id="cTitle">—</span>
+        <button class="ctrl-close" id="closeBtn" title="Закрыть">✕</button>
+      </div>
+      <div class="ctrl-bot">
+        <button class="btn" id="playBtn" title="Пауза">⏸</button>
+        <button class="btn btn-back" id="backBtn">← Назад</button>
+        <span class="time" id="cTime">0:00 / 0:00</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- CHANNELS -->
+<!-- КАНАЛЫ -->
 <div id="gridWrap">
-  <div class="loader" id="loader">
-    <div class="spin"></div>
-    <p>Загружаем каналы…</p>
-  </div>
-  <div class="state hidden" id="errorBlock">
-    <p id="errorMsg">Не удалось загрузить каналы</p>
-    <button id="retryBtn" onclick="init()">Повторить</button>
-  </div>
+  <div class="loader" id="loader"><div class="spin"></div><p>Загружаем каналы…</p></div>
+  <div class="state state--err hidden" id="errorBlock"><p id="errorMsg">Не удалось загрузить</p><button id="retryBtn">Повторить</button></div>
   <div class="hidden" id="contentBlock">
-    <div class="grid-head">
-      <h2 id="gridTitle">Все каналы</h2>
-      <span id="gridCount"></span>
-    </div>
+    <div class="grid-head"><h2 id="gridTitle">Все каналы</h2><span id="gridCount"></span></div>
     <div class="grid" id="grid"></div>
   </div>
   <div class="state hidden" id="emptyBlock"><p>Ничего не найдено</p></div>
@@ -151,201 +304,506 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-grad
 <div class="toasts" id="toasts"></div>
 
 <script>
-/* ===== Salom TV ===== */
+(function(){'use strict';
 
-const API = 'https://spectator-api.salomtv.uz/v1/tv/channel';
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const API  = 'https://spectator-api.salomtv.uz/v1/tv/channel';
 const HLS_BASE = 'https://link.salomtv.uz/playlist.m3u8?channel_id=';
 
+/* Категории — UUID (первые 8 символов) */
 const CATS = {
-  'Все':null,
-  'Развлекательные':['42f8a6fe','0d99c22c','862b68e6','9ac059cb'],
-  'Новостные':['0318abfe'],
-  'Спортивные':['2b25b899'],
-  'Детские':null,
-  'Музыкальные':null,
-  'Познавательные':['8c396b35','862b68e6'],
+  'Все':            null,
+  'Развлекательные':['42f8a6fe-4759','0d99c22c-fec7','862b68e6-7f59','9ac059cb-8461'],
+  'Новостные':      ['0318abfe-909c'],
+  'Спортивные':     ['2b25b899-0b24'],
+  'Детские':        null,
+  'Музыкальные':    null,
+  'Познавательные': ['8c396b35-03ae','862b68e6-7f59'],
 };
+
+/* Keyword-фильтры */
 const KW = {
-  'Детские':['детск','kids','baby','malysh','cartoon','mult','children','disney','nick'],
-  'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio'],
+  'Детские':    ['детск','kids','baby','malysh','cartoon','mult','children','disney','nick','bola'],
+  'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio','qoshiq'],
 };
 
+/* ============================================================
+   STATE
+   ============================================================ */
 let channels = [];
-let tab = 'Все';
-let search = '';
+let curTab = 'Все';
+let curSearch = '';
 let hls = null;
-let wake = null;
-let ct = null;
+let wakeLock = null;
+let hideTimer = null;
+let videoListeners = [];  // Храним слушатели чтобы удалять
 
-/* DOM */
-const $ = id => document.getElementById(id);
-const D = {
-  tabs:$('tabs'), loader:$('loader'), err:$('errorBlock'), errMsg:$('errorMsg'),
-  cont:$('contentBlock'), gTitle:$('gridTitle'), gCount:$('gridCount'), grid:$('grid'),
-  empty:$('emptyBlock'), player:$('player'), video:$('video'), ctrl:$('ctrl'),
-  cTitle:$('cTitle'), cTime:$('cTime'), playBtn:$('playBtn'), search:$('search'),
-  gridWrap:$('gridWrap'),
+/* ============================================================
+   DOM (kebab → camelCase через getElementById)
+   ============================================================ */
+const el = id => document.getElementById(id);
+const $ = {
+  tabs:     el('tabs'),
+  loader:   el('loader'),
+  err:      el('errorBlock'),
+  errMsg:   el('errorMsg'),
+  retry:    el('retryBtn'),
+  cont:     el('contentBlock'),
+  gTitle:   el('gridTitle'),
+  gCount:   el('gridCount'),
+  grid:     el('grid'),
+  empty:    el('emptyBlock'),
+  player:   el('player'),
+  videoWrap:el('videoWrap'),
+  video:    el('video'),
+  buffering:el('buffering'),
+  ctrl:     el('ctrl'),
+  cTitle:   el('cTitle'),
+  cTime:    el('cTime'),
+  playBtn:  el('playBtn'),
+  closeBtn: el('closeBtn'),
+  backBtn:  el('backBtn'),
+  search:   el('search'),
+  gridWrap: el('gridWrap'),
+  logoLink: el('logoLink'),
 };
 
-/* Toast */
-function toast(m,t){const e=document.createElement('div');e.className='toast'+(t?' '+t:'');e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>e.remove(),3500)}
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(msg, type){
+  const d = document.createElement('div');
+  d.className = 'toast' + (type ? ' ' + type : '');
+  d.textContent = msg;
+  el('toasts').appendChild(d);
+  setTimeout(()=>d.remove(), 3500);
+}
 
-/* Load data */
-async function load(){
-  const r = await fetch(API,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(10000)});
-  if(!r.ok) throw new Error('HTTP '+r.status);
+/* ============================================================
+   API
+   ============================================================ */
+async function loadData(){
+  const r = await fetch(API, {
+    headers:{'Accept':'application/json'},
+    signal: typeof AbortSignal.timeout === 'function'
+      ? AbortSignal.timeout(10000)
+      : AbortSignal.abort(), // fallback для старых браузеров
+  });
+  if(!r.ok) throw new Error('Сервер ответил: ' + r.status);
   const d = await r.json();
-  if(!d.tv_channels?.length) throw new Error('Нет каналов');
+  if(!d.tv_channels?.length) throw new Error('Каналов нет');
   return d.tv_channels;
 }
 
-/* Filter */
+/* ============================================================
+   ФИЛЬТР
+   ============================================================ */
 function filter(){
   let list = channels;
-  if(tab!=='Все'){
-    const ids = CATS[tab], kws = KW[tab]||[];
-    if(ids?.length) list = list.filter(c=>(c.category_ids||[]).some(id=>ids.some(i=>id.includes(i))));
-    if(kws.length){const kl=kws.map(k=>k.toLowerCase());list=list.filter(c=>kl.some(k=>(c.title_ru||c.title_en||c.title_uz||'').toLowerCase().includes(k)))}
+
+  // Категория
+  if(curTab !== 'Все'){
+    const ids = CATS[curTab];
+    const kws = KW[curTab] || [];
+
+    if(ids && ids.length){
+      list = list.filter(ch =>
+        (ch.category_ids||[]).some(cid => ids.some(prefix => cid.startsWith(prefix)))
+      );
+    }
+
+    if(kws.length){
+      const kl = kws.map(k => k.toLowerCase());
+      list = list.filter(ch => {
+        const t = (ch.title_ru || ch.title_en || ch.title_uz || '').toLowerCase();
+        return kl.some(k => t.includes(k));
+      });
+    }
   }
-  const q = search.trim().toLowerCase();
-  if(q) list = list.filter(c=>(c.title_ru||c.title_en||c.title_uz||'').toLowerCase().includes(q));
+
+  // Поиск
+  const q = curSearch.trim().toLowerCase();
+  if(q){
+    list = list.filter(ch =>
+      (ch.title_ru || ch.title_en || ch.title_uz || '').toLowerCase().includes(q)
+    );
+  }
+
   return list;
 }
 
-/* Render cards */
-function mkCard(c){
-  const el = document.createElement('div'); el.className = 'card';
-  const img = document.createElement('img'); img.src = c.image||''; img.alt = c.title_ru||'';
+/* ============================================================
+   РЕНДЕР КАРТОЧЕК
+   ============================================================ */
+function mkCard(ch){
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.tabIndex = 0;
+  card.setAttribute('role','button');
+  card.setAttribute('aria-label', ch.title_ru || ch.title_en || '');
+
+  const img = document.createElement('img');
+  img.src = ch.image || '';
+  img.alt = ch.title_ru || '';
   img.loading = 'lazy';
-  el.appendChild(img);
-  const h3 = document.createElement('h3'); h3.textContent = c.title_ru||c.title_en||c.title_uz||'—';
-  el.appendChild(h3);
-  el.addEventListener('click',()=>open(c));
-  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(c)}});
-  el.tabIndex = 0; el.setAttribute('role','button');
-  return el;
+  img.decoding = 'async';
+  card.appendChild(img);
+
+  const h3 = document.createElement('h3');
+  h3.textContent = ch.title_ru || ch.title_en || ch.title_uz || '—';
+  card.appendChild(h3);
+
+  // Клик
+  const handler = () => playerOpen(ch);
+  card.addEventListener('click', handler);
+  card.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); handler(); }
+  });
+
+  return card;
 }
 
 function render(){
-  D.grid.innerHTML = ''; const list = filter(), n = list.length;
-  D.gCount.textContent = n+' '+['канал','канала','каналов'][n%100>10&&n%100<20?2:[0,1,2,2,2][Math.min(n%10,5)]];
-  if(!n){D.empty.classList.remove('hidden');return}
-  D.empty.classList.add('hidden');
-  const f = document.createDocumentFragment(); list.forEach(c=>f.appendChild(mkCard(c))); D.grid.appendChild(f);
+  $.grid.innerHTML = '';
+  const list = filter();
+  const n = list.length;
+  const words = ['канал','канала','каналов'];
+  const idx = n%100>10 && n%100<14 ? 2 : [0,1,2,2,2][Math.min(n%10,5)];
+  $.gCount.textContent = n + ' ' + words[idx];
+
+  if(!n){
+    $.empty.classList.remove('hidden');
+    return;
+  }
+  $.empty.classList.add('hidden');
+
+  const frag = document.createDocumentFragment();
+  list.forEach(ch => frag.appendChild(mkCard(ch)));
+  $.grid.appendChild(frag);
 }
 
-/* Tabs */
+/* ============================================================
+   ТАБЫ
+   ============================================================ */
 function buildTabs(){
-  D.tabs.innerHTML = '';
-  Object.keys(CATS).forEach(name=>{
-    const b = document.createElement('button'); b.className='tab'+(name===tab?' active':'');
-    b.textContent = name;
-    b.addEventListener('click',()=>{
-      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-      b.classList.add('active'); tab=name; render();
+  $.tabs.innerHTML = '';
+  Object.keys(CATS).forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (name === curTab ? ' active' : '');
+    btn.textContent = name;
+    btn.addEventListener('click', () => {
+      $.tabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      curTab = name;
+      render();
     });
-    D.tabs.appendChild(b);
+    $.tabs.appendChild(btn);
   });
 }
 
-/* ===== PLAYER ===== */
-const P = {
-  async open(ch){
-    if(hls){hls.destroy();hls=null}
-    D.video.src = '';
-    D.cTitle.textContent = ch.title_ru||ch.title_en||ch.title_uz||'';
-    D.playBtn.textContent = '▶';
-    D.player.classList.add('open');
-    D.gridWrap.classList.add('hidden');
-    P.showCtrl();
+/* ============================================================
+   ПЛЕЕР — ПОЛНЫЙ ЭКРАН + HLS + WAKE LOCK
+   ============================================================ */
 
-    // Wake Lock
-    try{if(navigator.wakeLock) wake = await navigator.wakeLock.request('screen')}catch(e){}
+/* Удаляем старые слушатели видео */
+function removeVideoListeners(){
+  videoListeners.forEach(([evt, fn, opts]) => $.video.removeEventListener(evt, fn, opts));
+  videoListeners = [];
+}
 
-    // Fullscreen
-    try{
-      const el = D.player;
-      if(el.requestFullscreen) await el.requestFullscreen();
-      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    }catch(e){}
+/* Добавляем слушатели с трекингом */
+function onVideo(evt, fn, opts){
+  $.video.addEventListener(evt, fn, opts);
+  videoListeners.push([evt, fn, opts]);
+}
 
-    // Load HLS
-    const url = HLS_BASE + ch.flusonic_id;
-    if(Hls.isSupported()){
-      hls = new Hls({capLevelToPlayerSize:true,maxBufferLength:30});
-      hls.loadSource(url);
-      hls.attachMedia(D.video);
-      hls.on(Hls.Events.MANIFEST_PARSED,()=>D.video.play().catch(()=>{}));
-      hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)toast('Ошибка видео','err')});
-    } else if(D.video.canPlayType('application/vnd.apple.mpegurl')){
-      D.video.src = url;
-      D.video.addEventListener('loadedmetadata',()=>D.video.play().catch(()=>{}));
-    } else toast('HLS не поддерживается','err');
+/* Показать / скрыть контролы */
+function showCtrl(){
+  $.ctrl.classList.add('show');
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => $.ctrl.classList.remove('show'), 5000);
+}
+function hideCtrl(){
+  $.ctrl.classList.remove('show');
+  clearTimeout(hideTimer);
+}
 
-    D.video.addEventListener('play',()=>{D.playBtn.textContent='⏸'});
-    D.video.addEventListener('pause',()=>{D.playBtn.textContent='▶'});
-    D.video.addEventListener('timeupdate',()=>{
-      if(!D.video.duration) return;
-      const f=s=>{const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+String(sec).padStart(2,'0')};
-      D.cTime.textContent = f(D.video.currentTime||0)+' / '+f(D.video.duration||0);
-    });
-  },
+/* Время */
+function fmt(s){
+  const m = Math.floor(s/60);
+  const sec = Math.floor(s%60);
+  return m + ':' + String(sec).padStart(2,'0');
+}
 
-  exit(e){
-    if(e)e.preventDefault();
-    if(hls){hls.destroy();hls=null}
-    D.video.pause(); D.video.src=''; D.video.load();
-    D.player.classList.remove('open');
-    D.gridWrap.classList.remove('hidden');
-    if(wake){wake.release();wake=null}
-    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-    P.hideCtrl();
-  },
-
-  play(){
-    if(!D.video.src) return;
-    if(D.video.paused) D.video.play().catch(()=>{});
-    else D.video.pause();
-  },
-
-  showCtrl(){
-    D.ctrl.classList.add('show');
-    clearTimeout(ct);
-    ct = setTimeout(()=>D.ctrl.classList.remove('show'), 5000);
-  },
-
-  hideCtrl(){D.ctrl.classList.remove('show');clearTimeout(ct)},
-};
-
-window.P = P;
-
-/* Init */
-async function init(){
-  D.loader.classList.remove('hidden');
-  D.err.classList.add('hidden');
-  D.cont.classList.add('hidden');
-  D.empty.classList.add('hidden');
+/* Fullscreen */
+async function goFS(){
+  const target = $.player;
   try{
-    channels = await load();
-    D.loader.classList.add('hidden');
-    D.cont.classList.remove('hidden');
+    if(target.requestFullscreen) await target.requestFullscreen();
+    else if(target.webkitRequestFullscreen) await target.webkitRequestFullscreen();
+    else if(target.mozRequestFullScreen) await target.mozRequestFullScreen();
+    else if(target.msRequestFullscreen) await target.msRequestFullscreen();
+  }catch(e){/* заблокировано браузером */}
+}
+
+function exitFS(){
+  if(!document.fullscreenElement && !document.webkitFullscreenElement) return;
+  try{
+    if(document.exitFullscreen) document.exitFullscreen();
+    else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }catch(e){}
+}
+
+/* Wake Lock */
+async function lockScreen(){
+  try{
+    if('wakeLock' in navigator){
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  }catch(e){/* отклонено */}
+}
+function unlockScreen(){
+  if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
+}
+
+/* Открыть плеер */
+async function playerOpen(ch){
+  // Очистить предыдущий HLS
+  if(hls){ hls.destroy(); hls = null; }
+  removeVideoListeners();
+
+  // Сброс
+  $.video.src = '';
+  $.video.removeAttribute('src');
+  $.cTitle.textContent = ch.title_ru || ch.title_en || ch.title_uz || '';
+  $.playBtn.textContent = '⏸';
+  $.buffering.classList.remove('hidden');
+  $.cTime.textContent = '0:00 / 0:00';
+
+  // Переключить вид
+  $.gridWrap.classList.add('hidden');
+  $.player.classList.add('open');
+
+  // Показать контролы
+  showCtrl();
+
+  // Wake Lock
+  await lockScreen();
+
+  // Fullscreen
+  await goFS();
+
+  // Стрим
+  const url = HLS_BASE + ch.flusonic_id;
+
+  if(Hls.isSupported()){
+    hls = new Hls({
+      capLevelToPlayerSize: true,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      startLevel: -1,
+      enableWorker: true,
+      lowLatencyMode: false,
+    });
+
+    hls.loadSource(url);
+    hls.attachMedia($.video);
+
+    onVideo('playing', () => { $.playBtn.textContent = '⏸'; $.buffering.classList.add('hidden'); });
+    onVideo('pause', () => { $.playBtn.textContent = '▶'; });
+    onVideo('waiting', () => { $.buffering.classList.remove('hidden'); });
+    onVideo('canplay', () => { $.buffering.classList.add('hidden'); });
+    onVideo('timeupdate', () => {
+      if($.video.duration && isFinite($.video.duration)){
+        $.cTime.textContent = fmt($.video.currentTime) + ' / ' + fmt($.video.duration);
+      }
+    });
+    onVideo('error', () => {
+      $.buffering.classList.add('hidden');
+      toast('Ошибка воспроизведения видео', 'err');
+    });
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      $.buffering.classList.add('hidden');
+      $.video.play().catch(() => {});
+    });
+
+    hls.on(Hls.Events.ERROR, (_, data) => {
+      if(data.fatal){
+        $.buffering.classList.add('hidden');
+        if(data.type === Hls.ErrorTypes.NETWORK_ERROR){
+          toast('Ошибка сети. Проверьте интернет.', 'err');
+          hls.startLoad();
+        } else if(data.type === Hls.ErrorTypes.MEDIA_ERROR){
+          toast('Ошибка медиа. Перезапуск…', 'err');
+          hls.recoverMediaError();
+        } else {
+          toast('Неподдерживаемый формат видео', 'err');
+        }
+      }
+    });
+
+  } else if($.video.canPlayType('application/vnd.apple.mpegurl')){
+    // Safari — нативный HLS
+    $.video.src = url;
+    onVideo('loadedmetadata', () => { $.buffering.classList.add('hidden'); $.video.play().catch(()=>{}); });
+    onVideo('playing', () => { $.playBtn.textContent = '⏸'; $.buffering.classList.add('hidden'); });
+    onVideo('pause', () => { $.playBtn.textContent = '▶'; });
+    onVideo('waiting', () => { $.buffering.classList.remove('hidden'); });
+    onVideo('canplay', () => { $.buffering.classList.remove('hidden'); });
+    onVideo('timeupdate', () => {
+      if($.video.duration && isFinite($.video.duration)){
+        $.cTime.textContent = fmt($.video.currentTime) + ' / ' + fmt($.video.duration);
+      }
+    });
+    onVideo('error', () => {
+      $.buffering.classList.add('hidden');
+      toast('Ошибка воспроизведения', 'err');
+    });
+  } else {
+    $.buffering.classList.add('hidden');
+    toast('HLS не поддерживается в этом браузере', 'err');
+  }
+
+  // Скролл вверх
+  window.scrollTo(0, 0);
+}
+
+/* Выйти из плеера */
+function playerExit(){
+  // Остановить HLS
+  if(hls){ hls.destroy(); hls = null; }
+  removeVideoListeners();
+
+  // Остановить видео
+  $.video.pause();
+  $.video.removeAttribute('src');
+  $.video.load();
+  $.buffering.classList.add('hidden');
+
+  // Скрыть плеер
+  $.player.classList.remove('open');
+  $.gridWrap.classList.remove('hidden');
+
+  // Fullscreen → normal
+  exitFS();
+
+  // Wake Lock → off
+  unlockScreen();
+
+  // Спрятать контролы
+  hideCtrl();
+}
+
+/* Play / Pause */
+function togglePlay(){
+  if(!$.video.src) return;
+  if($.video.paused){
+    $.video.play().catch(()=>{});
+  } else {
+    $.video.pause();
+  }
+  showCtrl();
+}
+
+/* ============================================================
+   СОБЫТИЯ
+   ============================================================ */
+
+// Поиск (debounce)
+let searchTimer;
+$.search.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    curSearch = $.search.value;
     render();
-  }catch(e){
-    console.error(e);
-    D.loader.classList.add('hidden');
-    D.err.classList.remove('hidden');
-    D.errMsg.textContent = e.message||'Ошибка загрузки';
+  }, 200);
+});
+
+// Retry
+$.retry.addEventListener('click', init);
+
+// Кнопки плеера
+$.closeBtn.addEventListener('click', playerExit);
+$.backBtn.addEventListener('click', playerExit);
+$.playBtn.addEventListener('click', togglePlay);
+
+// Клик по видео → показать/скрыть контролы
+$.videoWrap.addEventListener('click', e => {
+  if(!$.player.classList.contains('open')) return;
+  // Не реагировать на клики по кнопкам
+  if(e.target.closest('button') || e.target.closest('.ctrl')) return;
+  if($.ctrl.classList.contains('show')) hideCtrl();
+  else showCtrl();
+});
+
+// Тач / движение мыши → показать контролы
+const activityHandler = () => {
+  if($.player.classList.contains('open')) showCtrl();
+};
+document.addEventListener('mousemove', activityHandler);
+document.addEventListener('touchstart', activityHandler, {passive:true});
+
+// Клавиши
+document.addEventListener('keydown', e => {
+  if($.player.classList.contains('open')){
+    if(e.key === 'Escape') playerExit();
+    if(e.key === ' '){ e.preventDefault(); togglePlay(); }
+    if(e.key === 'f' || e.key === 'F') goFS();
+  }
+});
+
+// Клик по логотипу → выйти из плеера
+$.logoLink.addEventListener('click', e => {
+  e.preventDefault();
+  if($.player.classList.contains('open')) playerExit();
+});
+
+// Fullscreen change
+document.addEventListener('fullscreenchange', () => {});
+document.addEventListener('webkitfullscreenchange', () => {});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function setLoad(on){
+  $.loader.classList.toggle('hidden', !on);
+  if(on){
+    $.err.classList.add('hidden');
+    $.cont.classList.add('hidden');
+    $.empty.classList.add('hidden');
   }
 }
 
-/* Events */
-buildTabs();
-D.search.addEventListener('input',()=>{clearTimeout(window._st);window._st=setTimeout(()=>{search=D.search.value;render()},200)});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&D.player.classList.contains('open'))P.exit()});
-document.addEventListener('mousemove',()=>{if(D.player.classList.contains('open'))P.showCtrl()});
-D.video.addEventListener('click',()=>{if(D.player.classList.contains('open')){if(D.ctrl.classList.contains('show'))P.hideCtrl();else P.showCtrl()}});
+function setErr(msg){
+  setLoad(false);
+  $.err.classList.remove('hidden');
+  $.errMsg.textContent = msg;
+}
 
-if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);
+async function init(){
+  setLoad(true);
+  try{
+    channels = await loadData();
+    setLoad(false);
+    $.cont.classList.remove('hidden');
+    buildTabs();
+    render();
+  }catch(e){
+    console.error('[SalomTV]', e);
+    setLoad(false);
+    setErr(e.message || 'Неизвестная ошибка');
+  }
+}
+
+/* СТАРТ */
+buildTabs();
+if(document.readyState !== 'loading') init();
+else document.addEventListener('DOMContentLoaded', init);
+
+})();
 </script>
 </body>
 </html>
