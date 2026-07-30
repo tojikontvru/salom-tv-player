@@ -203,24 +203,46 @@ function fmt(s){var m=Math.floor(s/60),sc=Math.floor(s%60);return m+':'+(sc<10?'
 /* ===== API ===== */
 function loadData(){
   return new Promise(function(resolve,reject){
-    var xhr=new XMLHttpRequest();
-    xhr.open('GET',API,true);
-    xhr.timeout=15000;
-    xhr.onload=function(){
-      try{
-        if(xhr.status>=200&&xhr.status<300){
-          var d=JSON.parse(xhr.responseText);
-          if(d.tv_channels&&d.tv_channels.length) resolve(d.tv_channels);
-          else reject(new Error('Нет каналов'));
-        } else {
-          reject(new Error('HTTP '+xhr.status));
-        }
-      }catch(e){reject(new Error('Ошибка парсинга: '+e.message))}
-    };
-    xhr.onerror=function(){reject(new Error('Сеть недоступна'))};
-    xhr.ontimeout=function(){reject(new Error('Таймаут соединения'))};
-    xhr.send();
+    /* try fetch first (modern browsers), then XHR fallback */
+    if(typeof fetch==='function'){
+      fetch(API).then(function(r){
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      }).then(function(d){
+        if(d.tv_channels&&d.tv_channels.length) resolve(d.tv_channels);
+        else reject(new Error('Нет каналов'));
+      }).catch(function(){
+        /* fetch failed, try XHR */
+        loadDataXHR(resolve,reject);
+      });
+    } else {
+      loadDataXHR(resolve,reject);
+    }
   });
+}
+
+function loadDataXHR(resolve,reject){
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET',API,true);
+  xhr.timeout=15000;
+  xhr.onload=function(){
+    if(xhr.status===0){
+      reject(new Error('CORS ошибка — сервер блокирует запрос. Попробуйте другой браузер.'));
+      return;
+    }
+    try{
+      if(xhr.status>=200&&xhr.status<300){
+        var d=JSON.parse(xhr.responseText);
+        if(d.tv_channels&&d.tv_channels.length) resolve(d.tv_channels);
+        else reject(new Error('Нет каналов'));
+      } else {
+        reject(new Error('HTTP '+xhr.status));
+      }
+    }catch(e){reject(new Error('Ошибка парсинга: '+e.message))}
+  };
+  xhr.onerror=function(){reject(new Error('Сеть недоступна'))};
+  xhr.ontimeout=function(){reject(new Error('Таймаут соединения'))};
+  xhr.send();
 }
 
 /* ===== FILTER ===== */
