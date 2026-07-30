@@ -15,80 +15,56 @@
 html{font-size:16px}
 body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px}*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent}
-
-/* HEADER */
 .hdr{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 20px;background:#141414;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-size:clamp(1.1rem,1.5vw,1.4rem);font-weight:700;font-family:MuseoModerno,sans-serif;color:#e01e5a;flex-shrink:0;cursor:pointer;letter-spacing:-.02em}
-
-/* TABS */
 .tabs{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:160px;justify-content:center}
 .tab{padding:6px 14px;border:none;border-radius:6px;background:transparent;color:#999;font:500 clamp(.68rem,.8vw,.78rem)/1.3 Inter,sans-serif;cursor:pointer;white-space:nowrap;transition:.15s;-webkit-tap-highlight-color:transparent;user-select:none}
 .tab:hover{color:#fff;background:rgba(255,255,255,.06)}
 .tab:active{transform:scale(.95)}
 .tab.on{background:#e01e5a;color:#fff;font-weight:600}
-
-/* SEARCH */
 .srch{position:relative;flex:1;min-width:120px;max-width:280px}
 .srch .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.4;pointer-events:none;line-height:1;color:#999}
 .srch input{width:100%;padding:8px 10px 8px 34px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#f0f0f0;font-size:.82rem;outline:none;transition:.15s;-webkit-appearance:none}
 .srch input::placeholder{color:#666}
 .srch input:focus{border-color:#e01e5a;background:rgba(255,255,255,.08)}
-
 .wrap{max-width:1920px;margin:0 auto;padding:clamp(10px,1.5vw,24px)}
 .gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .gh h2{font-size:clamp(.85rem,1.1vw,1.05rem);font-weight:700;color:#999;letter-spacing:-.02em;font-family:MuseoModerno,sans-serif}
 .gh span{font-size:clamp(.65rem,.8vw,.72rem);color:rgba(255,255,255,.25)}
-
-/* GRID */
 .grid{display:grid;grid-template-columns:repeat(var(--c,5),1fr);gap:clamp(8px,1vw,16px)}
-
-/* CARD */
 .card{display:flex;flex-direction:column;border-radius:12px;overflow:hidden;cursor:pointer;background:#2a2a2a;transition:transform .2s,border-color .2s;-webkit-tap-highlight-color:transparent;position:relative}
 @media(hover:hover){.card:hover{transform:translateY(-3px)}.card:hover img{transform:scale(1.04)}}
 .card:active{transform:scale(.97)}
 .card .thumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#1a1a1a;transition:transform .35s}
 .card .badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:4px;background:#e01e5a;color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1.2;pointer-events:none;z-index:2}
+.card .badge.free{background:#27ae60}
 .card .info{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px}
 .card .info h3{font-size:clamp(.72rem,.85vw,.8rem);font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0f0f0}
 .card .info .sub{font-size:clamp(.6rem,.7vw,.65rem);color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* LOADING */
 .ld{display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:center;min-height:240px}
 .ld .sp{width:34px;height:34px;border:3px solid rgba(255,255,255,.05);border-top-color:#e01e5a;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .ld p{font-size:.82rem;color:#888;font-weight:500}
-
-/* ERROR / EMPTY */
 .st{text-align:center;padding:40px 20px;border-radius:12px;background:#2a2a2a}
 .st p{color:#888;font-size:.86rem;margin:8px 0 14px;max-width:400px;margin-left:auto;margin-right:auto}
 .st button{padding:8px 22px;border:none;border-radius:6px;background:#e01e5a;color:#fff;font:600 .8rem Inter,sans-serif;cursor:pointer;transition:.15s}
 .st button:hover{background:#c01a4e}
 .st-er{border:1px solid rgba(255,90,110,.2)}
-
-/* PLAYER OVERLAY */
 #player{display:none;position:fixed;inset:0;z-index:1000;background:#000;-webkit-user-select:none;user-select:none}
 #player.on{display:flex}
 #player video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
 .buf{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top-color:#e01e5a;border-radius:50%;animation:sp .7s linear infinite;z-index:1;pointer-events:none}
 .buf.off{display:none}
-
-/* PLAYER CONTROLS */
 .ctrl{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;transition:opacity .35s;pointer-events:none}
 .ctrl.on{opacity:1;pointer-events:auto}
 .ctrl .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.15) 50%,transparent 100%);pointer-events:none;z-index:-1}
-
-/* Top bar */
 .ctrl .top{display:flex;align-items:center;gap:12px;padding:16px 20px;position:absolute;top:0;left:0;right:0}
 .ctrl .top span{flex:1;font-weight:600;font-size:clamp(.9rem,2vw,1.3rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.5)}
 .ctrl .top button{width:36px;height:36px;border:none;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;font-size:1.1rem;cursor:pointer;transition:.15s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .ctrl .top button:hover{background:rgba(224,30,90,.5)}
-
-/* Center play button */
 .ctrl .center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3}
 .ctrl .center button{width:60px;height:60px;border:none;border-radius:50%;background:rgba(224,30,90,.9);color:#fff;font-size:1.5rem;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(224,30,90,.3)}
 .ctrl .center button:active{transform:scale(.92)}
-
-/* Bottom bar */
 .ctrl .bottom{padding:10px 16px 16px;position:relative;z-index:2}
 .ctrl .progress{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:99px;background:rgba(255,255,255,.15);outline:none;cursor:pointer;margin-bottom:8px}
 .ctrl .progress::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:#e01e5a;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.4);cursor:pointer}
@@ -98,15 +74,11 @@ body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:10
 .ctrl .bar button:active{transform:scale(.95)}
 .ctrl .bar .fs-btn{margin-left:auto;background:rgba(255,255,255,.06)}
 .ctrl .bar .tm{color:rgba(255,255,255,.6);font-size:.72rem;font-variant-numeric:tabular-nums;margin-left:10px;white-space:nowrap}
-
-/* TOASTS */
 .tst{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px;max-width:360px}
 .tst div{padding:10px 16px;border-radius:8px;background:rgba(30,30,30,.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);color:#f0f0f0;font-size:.78rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fd .3s}
 .tst .er{border-left:3px solid #e01e5a}
 @keyframes fd{from{opacity:0;transform:translateY(12px)scale(.96)}to{opacity:1;transform:translateY(0)scale(1)}}
 .hid{display:none!important}
-
-/* RESPONSIVE */
 @media(max-width:600px){:root{--c:2}.hdr{flex-direction:row;flex-wrap:nowrap;padding:10px 12px;gap:8px}.tabs{display:none}.srch{min-width:80px;max-width:none}.ctrl .top{padding:12px 14px}.ctrl .bottom{padding:8px 12px 12px}.ctrl .center button{width:50px;height:50px;font-size:1.3rem}}
 @media(min-width:601px)and(max-width:900px){:root{--c:3}}
 @media(min-width:901px)and(max-width:1200px){:root{--c:4}}
@@ -115,8 +87,6 @@ body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:10
 @media(min-width:2560px){:root{--c:7}.wrap{max-width:2200px}}
 @media(hover:none){.card:hover{transform:none}.card:hover img{transform:none}}
 @supports(padding-top:env(safe-area-inset-top)){.hdr{padding-top:calc(12px + env(safe-area-inset-top))}.ctrl .bottom{padding-bottom:calc(16px + env(safe-area-inset-bottom))}}
-
-/* MOBILE BOTTOM NAV TABS */
 .mob-tabs{display:none}
 @media(max-width:600px){
   .mob-tabs{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:99;background:#141414;border-top:1px solid rgba(255,255,255,.06);padding:6px 4px env(safe-area-inset-bottom,6px);gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -128,7 +98,6 @@ body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:10
 </style>
 </head>
 <body>
-
 <header class="hdr">
   <a class="logo" id="logo">Salom TV</a>
   <div class="tabs" id="tabs"></div>
@@ -137,27 +106,24 @@ body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:10
     <input type="search" id="inp" placeholder="Поиск" autocomplete="off">
   </div>
 </header>
-
 <div id="player">
   <video id="vid" playsinline preload="none" crossorigin="anonymous"></video>
   <div class="buf" id="buf"></div>
   <div class="ctrl" id="ctrl">
     <div class="overlay"></div>
-    <div class="top"><span id="ctt">—</span><button id="cX"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></div>
+    <div class="top"><span id="ctt">—</span><button id="cX">✕</button></div>
     <div class="center"><button id="pB">▶</button></div>
     <div class="bottom">
       <input type="range" class="progress" id="prg" min="0" max="100" value="0" step="0.1">
       <div class="bar">
         <button id="playBtn"><span id="playIcon">▶</span></button>
         <span class="tm" id="tm">0:00 / 0:00</span>
-        <button class="fs-btn" id="fsBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+        <button class="fs-btn" id="fsBtn">⛶</button>
       </div>
     </div>
   </div>
 </div>
-
 <div class="mob-tabs" id="mobTabs"></div>
-
 <div class="wrap" id="gw">
   <div class="ld" id="ld"><div class="sp"></div><p>Загружаем каналы…</p></div>
   <div class="st st-er hid" id="er"><p id="erM">Не удалось загрузить</p><button id="erB">Повторить</button></div>
@@ -167,21 +133,22 @@ body{font-family:Inter,sans-serif;color:#f0f0f0;background:#1e1e1e;min-height:10
   </div>
   <div class="st hid" id="ep"><p>Ничего не найдено</p></div>
 </div>
-
 <div class="tst" id="tst"></div>
-
 <script>
 (function(){
 'use strict';
 
-var API='https://spectator-api.salomtv.uz/v1/tv/channel';
-var HLS='https://link.salomtv.uz/playlist.m3u8?channel_id=';
+var HLS_URL='https://link.salomtv.uz/playlist.m3u8?channel_id=';
+var API_URL='https://spectator-api.salomtv.uz/v1/tv/channel';
+var CACHE_KEY='salomtv_channels_v2';
+var CACHE_TTL=3600000; /* 1 hour */
+
+/* EMBEDDED FALLBACK DATA — always available, zero CORS */
+var EMBEDDED=[{"id":"Zor_TVHD","n":"Zo'r tv","i":"https://minio-api-hdd.salomtv.uz/images/a2dc84a182eb41dca0b505badc067d32_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"SevimliTVHD","n":"Sevimli TV HD","i":"https://minio-api-hdd.salomtv.uz/images/9446af5bf1b5455982afa5bedcc7722f_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"Mening_YurtimHD","n":"Mening Yurtim","i":"https://minio-api-hdd.salomtv.uz/images/c581da234a784947a845c2c06e9643e2_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"hayottv","n":"Hayot TV","i":"https://minio-api-hdd.salomtv.uz/images/e4956d27cdee41bd8a9f1977ed32a52d_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"Sport-UZ","n":"Sport ТV","i":"https://minio-api-hdd.salomtv.uz/images/9d8936d85a504beebecdd205000cdf6b_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","2b25b899-0b24-42e3-baa5-57332c8f86e9","f2e9b99c-51c4-469b-9d84-3cf69967d8ad","c27d48e1-a7d5-4612-adda-4acda246087c"],"s":true},{"id":"Milly_TVHD","n":"Milliy TV","i":"https://minio-api-hdd.salomtv.uz/images/a05916ee2265466691edac4ff9af0d66_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"Discovery_Channel","n":"Discovery Channel","i":"https://minio-api-hdd.salomtv.uz/images/de70b8b5b8b94728a169cfd913163810_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Myday","n":"MYDAYTV","i":"https://minio-api-hdd.salomtv.uz/images/43553cf2fe1a460e82ec5fb45bdfc504_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"Setanta2HD","n":"Setanta 2","i":"https://minio-api-hdd.salomtv.uz/images/04c0018c244d41ba940a5264dc31e0ec_cmprs.webp","p":"svod","r":"FULL HD","cat":["c27d48e1-a7d5-4612-adda-4acda246087c","2b25b899-0b24-42e3-baa5-57332c8f86e9","9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"Rossiya1","n":"Россия 1 (Ru)","i":"https://minio-api-hdd.salomtv.uz/images/97dc9eb25f6b453da5bfdf8195c9b55d_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"NationalGeographic","n":"National Geographic","i":"https://minio-api-hdd.salomtv.uz/images/1d9381c0f08248d5b553e3e16fc35055_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"BBC_WORLD_NEWS","n":"BBC WORLD NEWS","i":"https://minio-api-hdd.salomtv.uz/images/cfb960fbe73f4d5e982856c8cf0abc08_cmprs.webp","p":"svod","r":"HD","cat":["0318abfe-909c-4c15-ad73-a2eb176abbe8","9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"RETRO_UZ","n":"RETRO","i":"https://minio-api-hdd.salomtv.uz/images/f65e468351404845bcf9ef32f1a82841_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"QiziqTV","n":"QIZIQTV","i":"https://minio-api-hdd.salomtv.uz/images/4459b23f2be140cda22fe8c8d0277a6e_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"LuxTV","n":"LUX TV","i":"https://minio-api-hdd.salomtv.uz/images/a239cb8a7a074de09b809d7dd3441cd5_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"Madaniyat_va_Marifat","n":"Madaniyat va Ma'rifat","i":"https://minio-api-hdd.salomtv.uz/images/ad09e90db71e43f5902dd4561b52d6d3_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"NTV","n":"НТВ","i":"https://minio-api-hdd.salomtv.uz/images/15805acd5b0249d2b6b105793fc10eb8_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2","0d99c22c-fec7-4b86-b341-d1e2aa3160e2","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"Animal_Planet","n":"Animal Planet","i":"https://minio-api-hdd.salomtv.uz/images/9f7762694980417fa6d009988ac4b09c_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Eurosport","n":"Eurosport 1 SD","i":"https://minio-api-hdd.salomtv.uz/images/df348e51d2e348408e64d2c137ad61e9_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","2b25b899-0b24-42e3-baa5-57332c8f86e9","c27d48e1-a7d5-4612-adda-4acda246087c"],"s":true},{"id":"CNN","n":"CNN SD","i":"https://minio-api-hdd.salomtv.uz/images/580b19329e53470b84ea220c4851740c_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"Viasat_Explorer","n":"Viasat Explorer","i":"https://minio-api-hdd.salomtv.uz/images/2aeca58767164cfe8d6473ccc5633470_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Viasat_Sport","n":"Viasat Sport","i":"https://minio-api-hdd.salomtv.uz/images/8e7253f95d944316a0c3ba377fbcf53c_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","2b25b899-0b24-42e3-baa5-57332c8f86e9","c27d48e1-a7d5-4612-adda-4acda246087c"],"s":true},{"id":"Viasat_History","n":"Viasat History","i":"https://minio-api-hdd.salomtv.uz/images/a569fdc3378044ca9223379bedc5c88a_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"TV1000","n":"TV 1000","i":"https://minio-api-hdd.salomtv.uz/images/1087ba2e45f0471893144472b9b85cab_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"TV1000rus","n":"TV 1000 русское кино","i":"https://minio-api-hdd.salomtv.uz/images/2a82088791824770b7a62527650e37d5_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Viasat_Nature","n":"Viasat Nature","i":"https://minio-api-hdd.salomtv.uz/images/41f7ffe397744a28ab645094876e702d_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Davinci","n":"Da Vinci","i":"https://minio-api-hdd.salomtv.uz/images/dfdc8a3686fb46508e7ba16df0adb98e_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Perviy_Kanal","n":"Первый канал (Ru)","i":"https://minio-api-hdd.salomtv.uz/images/705915f1888c473ab298f9bf1bd266cc_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"Rossiya24","n":"Россия 24 (Ru)","i":"https://minio-api-hdd.salomtv.uz/images/a769b57f6a06411589489e35801aa641_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"Karusel","n":"Карусель (Ru)","i":"https://minio-api-hdd.salomtv.uz/images/38e2383e33bd43f29a42b32df865de72_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8a7e3dc8-edfe-4a50-b433-281e17955fec"],"s":true},{"id":"Uzbekiston","n":"O'zbekiston","i":"https://minio-api-hdd.salomtv.uz/images/ad3b65ce99b8464eb48dcf39951e1a8d_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"YoshlarHD","n":"Yoshlar","i":"https://minio-api-hdd.salomtv.uz/images/4b58c99f95494ebc93ea851ed5cc946e_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"Toshkent","n":"Toshkent","i":"https://minio-api-hdd.salomtv.uz/images/8d3d1977e23347e48b8f4aff81c4e932_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"Dunyoboylab_HD","n":"Dunyo bo'ylab HD","i":"https://minio-api-hdd.salomtv.uz/images/4feab1be97944f4b98ee2f80c3cfc14b_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Bolajon","n":"Bolajon","i":"https://minio-api-hdd.salomtv.uz/images/70d55e0f1542468991327d64ad2f4ced_cmprs.webp","p":"free","r":"FULL HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","8a7e3dc8-edfe-4a50-b433-281e17955fec","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"Navo","n":"NAVO","i":"https://minio-api-hdd.salomtv.uz/images/7f5c85189d5042ae81ee9b86879691b4_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Kinoteatr_HD","n":"Kinoteatr","i":"https://minio-api-hdd.salomtv.uz/images/5b1b4be9f2e843a5a761bf07d47d49ac_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Uzb24","n":"O'zbekiston 24 HD","i":"https://minio-api-hdd.salomtv.uz/images/f3b38d35d08a4b958e65f79c0021794b_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0318abfe-909c-4c15-ad73-a2eb176abbe8","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"Mahalla","n":"Mahalla","i":"https://minio-api-hdd.salomtv.uz/images/17bb12dcaa5c4819ba9c3fc92c4dbe11_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad"],"s":true},{"id":"Uzbekiston-TarixiHD","n":"O'zbekiston tarixi","i":"https://minio-api-hdd.salomtv.uz/images/1afa7d0b035e4d91a142e8bc8fcc820c_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","f2e9b99c-51c4-469b-9d84-3cf69967d8ad","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"UzreportTV-HD","n":"UzReport","i":"https://minio-api-hdd.salomtv.uz/images/a14e3c6ba7654d6c96ba04bcae828569_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"FTVHD","n":"FTV","i":"https://minio-api-hdd.salomtv.uz/images/b04e4a580ca74d189dc9236102bd2396_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"DasturxonTV","n":"Dasturhon TV","i":"https://minio-api-hdd.salomtv.uz/images/9c54754f663c412c90123ad64e119101_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"Renessans_TV","n":"Renessans","i":"https://minio-api-hdd.salomtv.uz/images/b8be7243bffd4ec0ba967c0b46a0017d_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"TTV_Musiqa","n":"TTV Musiqa","i":"https://minio-api-hdd.salomtv.uz/images/eac47a4d5d9e472ebe4fa7e2da581689_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Mirtv","n":"МИР","i":"https://minio-api-hdd.salomtv.uz/images/0ca81c4561fc46268698a832c9caf415_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"Mir24","n":"МИР 24","i":"https://minio-api-hdd.salomtv.uz/images/7125826fd6a346579f09c464addb5b33_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"TRT_Avaz","n":"TRT Avaz","i":"https://minio-api-hdd.salomtv.uz/images/95f7706f15264844a4e28bdb57359bf5_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"TRT_HABER","n":"TRT HABER","i":"https://minio-api-hdd.salomtv.uz/images/e0dbff9ba35b490a91dd61a632479a2b_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"Aqilvoy","n":"Aqlvoy","i":"https://minio-api-hdd.salomtv.uz/images/69d81071642c4d7bb5e76463e79189be_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","8a7e3dc8-edfe-4a50-b433-281e17955fec"],"s":true},{"id":"Setanta1HD","n":"Setanta 1 HD","i":"https://minio-api-hdd.salomtv.uz/images/2b99528710cb47eb8f9eb7681a3750ab_cmprs.webp","p":"svod","r":"HD","cat":["c27d48e1-a7d5-4612-adda-4acda246087c","2b25b899-0b24-42e3-baa5-57332c8f86e9","9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"Xabar24","n":"Xabar 24","i":"https://minio-api-hdd.salomtv.uz/images/8152771fed5c44d4a91dbeb2e3e04d95_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"WORLDJAPAN","n":"NHK WORLD JAPAN","i":"https://minio-api-hdd.salomtv.uz/images/46716515e19f4158a7b672232cef2bd7_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"NatGeoWildHD","n":"Nat Geo Wild HD","i":"https://minio-api-hdd.salomtv.uz/images/ed7b550f20b24d28b0991d0d1c2f4d2b_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"BLOOMBERG","n":"BLOOMBERG","i":"https://minio-api-hdd.salomtv.uz/images/e52ee52480644ab3a206197cd1c4c779_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"aljazeera","n":"AL JAZEERA","i":"https://minio-api-hdd.salomtv.uz/images/6786a949814946d09935ac56ce0746be_cmprs.webp","p":"svod","r":"HD","cat":["0318abfe-909c-4c15-ad73-a2eb176abbe8","9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"AZTV","n":"AZTV","i":"https://minio-api-hdd.salomtv.uz/images/0977483051f74354a3ddc692310f1bf8_cmprs.webp","p":"svod","r":"HD","cat":["0318abfe-909c-4c15-ad73-a2eb176abbe8","9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"BRIDGE_TV_CLASSIC","n":"BRIDGE TV CLASSIC","i":"https://minio-api-hdd.salomtv.uz/images/d3c6e95fed534a6d85c8cacd6187e210_cmprs.webp","p":"svod","r":"HD","cat":["0318abfe-909c-4c15-ad73-a2eb176abbe8","9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"CGTN","n":"CGTN","i":"https://minio-api-hdd.salomtv.uz/images/a6dbf98854a24929af399331c893d641_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"CNBC","n":"CNBC","i":"https://minio-api-hdd.salomtv.uz/images/40235b3dbe17445db438972adfa21f46_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"DEUTSCHE_WELLE","n":"DEUTSCHE WELLE","i":"https://minio-api-hdd.salomtv.uz/images/4a8fd080ff6345388321fca4da8e1ee6_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"EURONEWS","n":"EURO NEWS","i":"https://minio-api-hdd.salomtv.uz/images/6f58aaf313f24caca3238280ee7607ad_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"eurosport_2","n":"EUROSPORT 2","i":"https://minio-api-hdd.salomtv.uz/images/2507551889c240a59581260cf76c2789_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","2b25b899-0b24-42e3-baa5-57332c8f86e9","c27d48e1-a7d5-4612-adda-4acda246087c"],"s":true},{"id":"fashiontv","n":"FASHION TV","i":"https://minio-api-hdd.salomtv.uz/images/feea0e19539649249d379c5831bd5748_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"france_24","n":"FRANCE 24","i":"https://minio-api-hdd.salomtv.uz/images/e11cafcf23004547a45edcfc2887f6f0_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"FutbolTV","n":"Futbol TV","i":"https://minio-api-hdd.salomtv.uz/images/f071ac7cd5734214b809a23cc05c812b_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","2b25b899-0b24-42e3-baa5-57332c8f86e9","c27d48e1-a7d5-4612-adda-4acda246087c"],"s":true},{"id":"Nurafshon_TV","n":"Nurafshon","i":"https://minio-api-hdd.salomtv.uz/images/07cf1a1e8f1445ed8d04e8ec3408a98c_cmprs.webp","p":"free","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"MiMiTV","n":"MiMi TV","i":"https://minio-api-hdd.salomtv.uz/images/61fbb43c7b984f8783254c7dbc168fb7_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","8a7e3dc8-edfe-4a50-b433-281e17955fec"],"s":true},{"id":"BIZCINEMA","n":"Biz Cinema","i":"https://minio-api-hdd.salomtv.uz/images/eca55aee7f81467e9b527fb305b9e7de_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Makon_TV","n":"Makon TV","i":"https://minio-api-hdd.salomtv.uz/images/cdaea043952b48cb8641153fb5a33e78_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Tojikiston","n":"ТОҶИКИСТОН","i":"https://minio-api-hdd.salomtv.uz/images/db5aafebaf3d461d87e14e8b471a4f7e_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3"],"s":true},{"id":"Smusic","n":"Smusic","i":"https://minio-api-hdd.salomtv.uz/images/5846aa32904a4ccda80b848d39ed2f03_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"vijuTV1000action","n":"TV 1000 ACTION","i":"https://minio-api-hdd.salomtv.uz/images/b521ded5e71340a9b9c71561d5d9fbd3_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"BizTV","n":"BizTV","i":"https://minio-api-hdd.salomtv.uz/images/b6693ac106774677880738c5e0330dc3_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"BizMusic","n":"Biz Music","i":"https://minio-api-hdd.salomtv.uz/images/81f97c217a1840d8ad3c5cb402dbc17c_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"ShifoTV","n":"Shifo TV","i":"https://minio-api-hdd.salomtv.uz/images/e642682c204245be9dc0a00c283594ed_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"itvmusic","n":"ITV Music","i":"https://minio-api-hdd.salomtv.uz/images/2c69a6b4cc924979a99223436fe025c3_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Indiyskoe_Kino","n":"Индийское Кино","i":"https://minio-api-hdd.salomtv.uz/images/60c647ae002846488d0236cba5d1fd31_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Avto_Plus","n":"Авто Плюс","i":"https://minio-api-hdd.salomtv.uz/images/42a833ac8e40430882ab3288e76a3d7c_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Kinopremera","n":"КИНОПРЕМЬЕРА","i":"https://minio-api-hdd.salomtv.uz/images/79340742e83d4e61be99c5116ae3ed55_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Kinoxit","n":"Кинохит","i":"https://minio-api-hdd.salomtv.uz/images/6a7dc70afba34cf8bbf4c648ede07e64_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Kinosvidanie","n":"Киносвидание","i":"https://minio-api-hdd.salomtv.uz/images/fc77339c9ca94a3b915f01669e032791_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Nashe_novoe_kino","n":"Наше новое кино","i":"https://minio-api-hdd.salomtv.uz/images/700c6633ccb343328962876a626a4bc2_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Rodnoe_Kino","n":"Родное кино","i":"https://minio-api-hdd.salomtv.uz/images/f412217082e44071bc5f141f783670fc_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Mujskoe-KinoHD","n":"Мужское кино","i":"https://minio-api-hdd.salomtv.uz/images/84e685cef0fb4f1aa4c2c7ab4cebcffd_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"MMA-TV.comHD","n":"MMA-TV.Com","i":"https://minio-api-hdd.salomtv.uz/images/0caafde746ec49bca3180b7389387109_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Kinoseriya","n":"Киносерия","i":"https://minio-api-hdd.salomtv.uz/images/7aeb15fb80a04ba1ba19fbd3a832b127_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Kinokomediya","n":"Кинокомедия","i":"https://minio-api-hdd.salomtv.uz/images/d15d5ac59e15420999d69d334fb2ce62_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"KuxnyaTV","n":"Кухня ТВ","i":"https://minio-api-hdd.salomtv.uz/images/d05ce8ca03b64386a41d31c1f47b125e_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"365Dney","n":"365 Дней","i":"https://minio-api-hdd.salomtv.uz/images/1ff21b06a2c04eab84cab35950ef664c_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"DikayaRibalka_HD","n":"Дикая рыбалка","i":"https://minio-api-hdd.salomtv.uz/images/4183bc5128f44959bc156637631735f1_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"lya_minor","n":"Ля-Минор ТВ","i":"https://minio-api-hdd.salomtv.uz/images/7ab598a0d0b9418b95538f683b58c896_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Dorama","n":"Дорама","i":"https://minio-api-hdd.salomtv.uz/images/255c68a75d754d96973a9313e3e6b8d0_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Retro_ru","n":"Ретро","i":"https://minio-api-hdd.salomtv.uz/images/ae9a9c1ffcc94efd8394364a5dc46f39_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0d99c22c-fec7-4b86-b341-d1e2aa3160e2"],"s":true},{"id":"Unikum","n":"Уникум","i":"https://minio-api-hdd.salomtv.uz/images/d2aaab410b7b476c95c82332460eafe9_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8a7e3dc8-edfe-4a50-b433-281e17955fec"],"s":true},{"id":"Ohota_Ribalka","n":"Охота и рыбалка","i":"https://minio-api-hdd.salomtv.uz/images/247b6a3097a44164b5c7579a29134fb0_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"ZooPark","n":"Zooпарк","i":"https://minio-api-hdd.salomtv.uz/images/f51b4f51de0c4900958193439bcf436d_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"JivayaPrirodaHD","n":"Живая природа","i":"https://minio-api-hdd.salomtv.uz/images/8e3dc434d2ff499aad27377ec75f7fcf_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"JivayaPlaneta","n":"Живая планета","i":"https://minio-api-hdd.salomtv.uz/images/f4fe10806f6f4e78a9b4f37a0924466b_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"Vgostahuskazki","n":"В гостях у сказки","i":"https://minio-api-hdd.salomtv.uz/images/25cd40fb88ae4ca9ae10ed34f6e86e34_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8a7e3dc8-edfe-4a50-b433-281e17955fec"],"s":true},{"id":"Tehno_24","n":"Т24","i":"https://minio-api-hdd.salomtv.uz/images/a6f303c9f7ab46709e7b0ec44d3632a9_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","8c396b35-03ae-4781-8acf-f0544b8b27bb"],"s":true},{"id":"KinomiksHD","n":"Киномикс","i":"https://minio-api-hdd.salomtv.uz/images/7fdde178a53b4269b602d7986d247a76_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Kinosemya","n":"Киносемья","i":"https://minio-api-hdd.salomtv.uz/images/705f1109bb8740ecbd55279346b0b09b_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"TVC","n":"TVC","i":"https://minio-api-hdd.salomtv.uz/images/af4c56970b364b26a68ae592603c3db1_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","0318abfe-909c-4c15-ad73-a2eb176abbe8"],"s":true},{"id":"vijuComedy","n":"viju Comedy","i":"https://minio-api-hdd.salomtv.uz/images/cc797b8caaed4448a9a3a70bb33ad759_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Viju_Serial","n":"Viju Serial","i":"https://minio-api-hdd.salomtv.uz/images/7317114014a94d29adc0866cdf4325c2_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"ViP_Premiere","n":"ViP Premiere","i":"https://minio-api-hdd.salomtv.uz/images/7f69a9bd09df4a91b5f68b91b1cc821d_cmprs.webp","p":"svod","r":"HD","cat":["9ac059cb-8461-4ad9-a2a1-870cd0e17ab3","862b68e6-7f59-4dc6-839e-1cfe32cf8fc2"],"s":true},{"id":"Farovon_Yurt","n":"Farovon Yurt","i":"https://minio-api-hdd.salomtv.uz/images/f3f607ad341b4fa581829a21720a877f_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true},{"id":"Cinemedia","n":"Cinemedia","i":"https://minio-api-hdd.salomtv.uz/images/fef270110a044629b17af3bbcc7e3747_cmprs.webp","p":"svod","r":"HD","cat":["42f8a6fe-4759-43a0-8f9a-1bc0c03be64d"],"s":true}];
 
 var CATS={'Все':null,'Развлекательные':['42f8a6fe','0d99c22c','862b68e6','9ac059cb','0318abfe'],'Новостные':['0318abfe'],'Спортивные':['2b25b899'],'Детские':null,'Музыкальные':null,'Познавательные':['8c396b35','862b68e6']};
-var KW={'Детские':['детск','kids','baby','malysh','cartoon','mult','children','disney','nick','bola'],'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio','qoshiq']};
-
+var KW={'Детские':['детск','kids','baby','malysh','cartoon','mult','children','disney','nick','bola','bolajon','aq','karusel','multiland','muli'],'Музыкальные':['muz','music','mtv','hit','tunes','musica','song','dance','radio','qoshiq','smusic','bizmusic','itvmusic','navo']};
 var chs=[],tab='Все',srch='',hls=null,wk=null,ht=null,vl=[];
-
 var vid=document.getElementById('vid');
 var player=document.getElementById('player');
 var ctrl=document.getElementById('ctrl');
@@ -197,77 +164,79 @@ var playIcon=document.getElementById('playIcon');
 var fsBtn=document.getElementById('fsBtn');
 
 function toast(m,t){var d=document.createElement('div');d.className=t||'';d.textContent=m;document.getElementById('tst').appendChild(d);setTimeout(function(){d.remove()},3500)}
-
 function fmt(s){var m=Math.floor(s/60),sc=Math.floor(s%60);return m+':'+(sc<10?'0':'')+sc}
 
-/* ===== API ===== */
-function loadData(){
-  return new Promise(function(resolve,reject){
-    /* try fetch first (modern browsers), then XHR fallback */
-    if(typeof fetch==='function'){
-      fetch(API).then(function(r){
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        return r.json();
-      }).then(function(d){
-        if(d.tv_channels&&d.tv_channels.length) resolve(d.tv_channels);
-        else reject(new Error('Нет каналов'));
-      }).catch(function(){
-        /* fetch failed, try XHR */
-        loadDataXHR(resolve,reject);
-      });
-    } else {
-      loadDataXHR(resolve,reject);
+/* ===== DATA LOADING — EMBEDDED FIRST, API IN BACKGROUND ===== */
+function getChannels(){
+  /* Try localStorage cache first */
+  try{
+    var cached=localStorage.getItem(CACHE_KEY);
+    if(cached){
+      var obj=JSON.parse(cached);
+      if(obj.ts&&Date.now()-obj.ts<CACHE_TTL&&obj.d&&obj.d.length>0) return obj.d;
     }
-  });
+  }catch(e){}
+  /* Fallback to embedded data */
+  return EMBEDDED;
 }
 
-function loadDataXHR(resolve,reject){
-  var xhr=new XMLHttpRequest();
-  xhr.open('GET',API,true);
-  xhr.timeout=15000;
-  xhr.onload=function(){
-    if(xhr.status===0){
-      reject(new Error('CORS ошибка — сервер блокирует запрос. Попробуйте другой браузер.'));
-      return;
-    }
-    try{
+function saveCache(data){
+  try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),d:data}))}catch(e){}
+}
+
+/* Update from API in background (non-blocking) */
+function refreshFromAPI(){
+  try{
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',API_URL,true);
+    xhr.timeout=10000;
+    xhr.onload=function(){
       if(xhr.status>=200&&xhr.status<300){
-        var d=JSON.parse(xhr.responseText);
-        if(d.tv_channels&&d.tv_channels.length) resolve(d.tv_channels);
-        else reject(new Error('Нет каналов'));
-      } else {
-        reject(new Error('HTTP '+xhr.status));
+        try{
+          var raw=JSON.parse(xhr.responseText);
+          if(raw.tv_channels&&raw.tv_channels.length){
+            var mapped=raw.tv_channels.map(function(c){
+              return{id:c.flusonic_id||'',n:c.title_ru||c.title_en||c.title_uz||'',i:c.image||'',p:c.payment_type||'free',r:c.resolution||'HD',cat:c.category_ids||[],s:c.status!==false};
+            });
+            saveCache(mapped);
+            /* If user is on main view, silently update */
+            if(!player.classList.contains('on')){
+              chs=mapped;
+              render();
+            }
+          }
+        }catch(e){}
       }
-    }catch(e){reject(new Error('Ошибка парсинга: '+e.message))}
-  };
-  xhr.onerror=function(){reject(new Error('Сеть недоступна'))};
-  xhr.ontimeout=function(){reject(new Error('Таймаут соединения'))};
-  xhr.send();
+    };
+    xhr.onerror=function(){};
+    xhr.ontimeout=function(){};
+    xhr.send();
+  }catch(e){}
 }
 
 /* ===== FILTER ===== */
 function filter(){
-  var list=chs;
+  var list=chs.filter(function(c){return c.s});
   if(tab!=='Все'){
     var ids=CATS[tab],kws=KW[tab]||[];
-    if(ids&&ids.length) list=list.filter(function(c){return(c.category_ids||[]).some(function(id){return ids.some(function(p){return id.indexOf(p)===0})})});
-    if(kws.length) list=list.filter(function(c){var t=(c.title_ru||c.title_en||c.title_uz||'').toLowerCase();return kws.some(function(k){return t.indexOf(k.toLowerCase())>=0})});
+    if(ids&&ids.length) list=list.filter(function(c){return(c.cat||[]).some(function(id){return ids.some(function(p){return id.indexOf(p)===0})})});
+    if(kws.length) list=list.filter(function(c){var t=(c.n||'').toLowerCase();return kws.some(function(k){return t.indexOf(k.toLowerCase())>=0})});
   }
   var q=srch.trim().toLowerCase();
-  if(q) list=list.filter(function(c){return(c.title_ru||c.title_en||c.title_uz||'').toLowerCase().indexOf(q)>=0});
+  if(q) list=list.filter(function(c){return(c.n||'').toLowerCase().indexOf(q)>=0});
   return list;
 }
 
 /* ===== RENDER ===== */
 function mkCard(c){
   var el=document.createElement('div');el.className='card';el.tabIndex=0;el.setAttribute('role','button');
-  var thumb=document.createElement('img');thumb.className='thumb';thumb.src=c.image||'';thumb.alt=c.title_ru||'';thumb.loading='lazy';thumb.decoding='async';
+  var thumb=document.createElement('img');thumb.className='thumb';thumb.src=c.i||'';thumb.alt=c.n||'';thumb.loading='lazy';thumb.decoding='async';
   thumb.onerror=function(){var p=thumb.parentElement;if(p){p.style.background='linear-gradient(135deg,#e01e5a 0%,#7c0e3a 100%)';thumb.style.display='none'}};
   el.appendChild(thumb);
-  var badge=document.createElement('span');badge.className='badge';badge.textContent='TV';el.appendChild(badge);
+  var badge=document.createElement('span');badge.className='badge'+(c.p==='free'?' free':'');badge.textContent=c.p==='free'?'FREE':'TV';el.appendChild(badge);
   var info=document.createElement('div');info.className='info';
-  var h3=document.createElement('h3');h3.textContent=c.title_ru||c.title_en||c.title_uz||'—';info.appendChild(h3);
-  var sub=document.createElement('div');sub.className='sub';sub.textContent='Прямой эфир';info.appendChild(sub);
+  var h3=document.createElement('h3');h3.textContent=c.n||'—';info.appendChild(h3);
+  var sub=document.createElement('div');sub.className='sub';sub.textContent=c.r||'HD';info.appendChild(sub);
   el.appendChild(info);
   el.addEventListener('click',function(){openP(c)});
   el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openP(c)}});
@@ -313,12 +282,8 @@ function hideC(){ctrl.classList.remove('on');clearTimeout(ht)}
 function toggleC(){if(ctrl.classList.contains('on'))hideC();else showC()}
 
 /* ===== PROGRESS BAR ===== */
-function updPrg(){
-  if(vid.duration&&isFinite(vid.duration))prg.value=(vid.currentTime/vid.duration)*100;
-}
-function seekPrg(){
-  if(vid.duration&&isFinite(vid.duration))vid.currentTime=(prg.value/100)*vid.duration;
-}
+function updPrg(){if(vid.duration&&isFinite(vid.duration))prg.value=(vid.currentTime/vid.duration)*100}
+function seekPrg(){if(vid.duration&&isFinite(vid.duration))vid.currentTime=(prg.value/100)*vid.duration}
 
 /* ===== WAKE LOCK ===== */
 function lockWk(){try{if('wakeLock'in navigator)navigator.wakeLock.request('screen').then(function(w){wk=w})}catch(e){}}
@@ -334,56 +299,48 @@ function openP(ch){
     if(hls){hls.destroy();hls=null}
     rmVL();
     vid.removeAttribute('src');
-    ctt.textContent=ch.title_ru||ch.title_en||ch.title_uz||'';
-    pB.textContent='▶';
-    playIcon.textContent='▶';
+    ctt.textContent=ch.n||'';
+    pB.textContent='\u25b6';
+    playIcon.textContent='\u25b6';
     buf.classList.remove('off');
     tm.textContent='0:00 / 0:00';
     prg.value=0;
-
     gw.classList.add('hid');
-    document.querySelector('.mob-tabs')&&(document.querySelector('.mob-tabs').style.display='none');
+    var mt=document.querySelector('.mob-tabs');if(mt)mt.style.display='none';
     player.classList.add('on');
     showC();
-
     goFS();
     lockWk();
-
-    var url=HLS+ch.flusonic_id;
-
+    var url=HLS_URL+ch.id;
     if(typeof Hls!=='undefined'&&Hls.isSupported()){
       hls=new Hls({capLevelToPlayerSize:true,maxBufferLength:30,startLevel:-1,enableWorker:true});
       hls.loadSource(url);hls.attachMedia(vid);
-
-      addVL('playing',function(){playIcon.textContent='⏸';pB.textContent='⏸';buf.classList.add('off')});
-      addVL('pause',function(){playIcon.textContent='▶';pB.textContent='▶'});
+      addVL('playing',function(){playIcon.textContent='\u23f8';pB.textContent='\u23f8';buf.classList.add('off')});
+      addVL('pause',function(){playIcon.textContent='\u25b6';pB.textContent='\u25b6'});
       addVL('waiting',function(){buf.classList.remove('off')});
       addVL('canplay',function(){buf.classList.add('off')});
       addVL('timeupdate',function(){if(vid.duration&&isFinite(vid.duration)){tm.textContent=fmt(vid.currentTime)+' / '+fmt(vid.duration);updPrg()}});
-      addVL('error',function(){buf.classList.add('off');toast('Ошибка видео','er')});
-
+      addVL('error',function(){buf.classList.add('off');toast('\u041e\u0448\u0438\u0431\u043a\u0430 \u0432\u0438\u0434\u0435\u043e','er')});
       hls.on(Hls.Events.MANIFEST_PARSED,function(){buf.classList.add('off');vid.play().catch(function(){})});
       hls.on(Hls.Events.ERROR,function(_,d){
         if(d.fatal){buf.classList.add('off');
-          if(d.type===Hls.ErrorTypes.NETWORK_ERROR){toast('Нет сети','er');hls.startLoad()}
-          else if(d.type===Hls.ErrorTypes.MEDIA_ERROR){toast('Ошибка медиа','er');hls.recoverMediaError()}
-          else toast('Формат не поддерживается','er')}
+          if(d.type===Hls.ErrorTypes.NETWORK_ERROR){toast('\u041d\u0435\u0442 \u0441\u0435\u0442\u0438','er');hls.startLoad()}
+          else if(d.type===Hls.ErrorTypes.MEDIA_ERROR){toast('\u041e\u0448\u0438\u0431\u043a\u0430 \u043c\u0435\u0434\u0438\u0430','er');hls.recoverMediaError()}
+          else toast('\u0424\u043e\u0440\u043c\u0430\u0442 \u043d\u0435 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f','er')}
       });
-
     } else if(vid.canPlayType('application/vnd.apple.mpegurl')){
       vid.src=url;
       addVL('loadedmetadata',function(){buf.classList.add('off');vid.play().catch(function(){})});
-      addVL('playing',function(){playIcon.textContent='⏸';pB.textContent='⏸';buf.classList.add('off')});
-      addVL('pause',function(){playIcon.textContent='▶';pB.textContent='▶'});
+      addVL('playing',function(){playIcon.textContent='\u23f8';pB.textContent='\u23f8';buf.classList.add('off')});
+      addVL('pause',function(){playIcon.textContent='\u25b6';pB.textContent='\u25b6'});
       addVL('timeupdate',function(){if(vid.duration&&isFinite(vid.duration)){tm.textContent=fmt(vid.currentTime)+' / '+fmt(vid.duration);updPrg()}});
-      addVL('error',function(){buf.classList.add('off');toast('Ошибка видео','er')});
+      addVL('error',function(){buf.classList.add('off');toast('\u041e\u0448\u0438\u0431\u043a\u0430 \u0432\u0438\u0434\u0435\u043e','er')});
     } else {
       buf.classList.add('off');
-      toast('HLS не поддерживается','er');
+      toast('HLS \u043d\u0435 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f','er');
     }
-
     window.scrollTo(0,0);
-  }catch(e){console.error('[P]',e);buf.classList.add('off');toast('Ошибка: '+e.message,'er')}
+  }catch(e){console.error('[P]',e);buf.classList.add('off');toast('\u041e\u0448\u0438\u0431\u043a\u0430: '+e.message,'er')}
 }
 
 function closeP(){
@@ -408,58 +365,38 @@ var debTimer;
 document.getElementById('inp').addEventListener('input',function(){clearTimeout(debTimer);debTimer=setTimeout(function(){srch=document.getElementById('inp').value;render()},200)});
 document.getElementById('erB').addEventListener('click',go);
 document.getElementById('cX').addEventListener('click',closeP);
-
 document.getElementById('pB').addEventListener('click',togPlay);
 playBtn.addEventListener('click',togPlay);
-
 fsBtn.addEventListener('click',function(e){e.stopPropagation();if(document.fullscreenElement||document.webkitFullscreenElement)exitFS();else goFS()});
-
 prg.addEventListener('input',seekPrg);
-
 document.getElementById('player').addEventListener('click',function(e){
   if(!player.classList.contains('on'))return;
   if(e.target.tagName==='BUTTON'||e.target.closest('button'))return;
   if(e.target===prg||e.target.closest('.progress'))return;
   toggleC();
 });
-
 document.addEventListener('mousemove',function(){if(player.classList.contains('on'))showC()});
 document.addEventListener('touchstart',function(){if(player.classList.contains('on'))showC()},{passive:true});
-
 document.addEventListener('keydown',function(e){
   if(!player.classList.contains('on'))return;
   if(e.key==='Escape')closeP();
   if(e.key===' '){e.preventDefault();togPlay()}
   if(e.key==='f'||e.key==='F')goFS();
 });
-
 document.getElementById('logo').addEventListener('click',function(e){e.preventDefault();if(player.classList.contains('on'))closeP()});
 
 /* ===== INIT ===== */
 function go(){
-  console.log('[SALOM-TV] Loading...');
-  document.getElementById('ld').classList.remove('hid');
-  document.getElementById('er').classList.add('hid');
-  document.getElementById('cb').classList.add('hid');
-  document.getElementById('ep').classList.add('hid');
-  loadData().then(function(d){
-    console.log('[SALOM-TV] Loaded '+d.length+' channels');
-    chs=d;
-    document.getElementById('ld').classList.add('hid');
-    document.getElementById('cb').classList.remove('hid');
-    buildTabs();render();
-  }).catch(function(e){
-    console.error('[SALOM-TV]',e);
-    document.getElementById('ld').classList.add('hid');
-    document.getElementById('er').classList.remove('hid');
-    var msg=e.message||'Ошибка';
-    if(msg==='Сеть недоступна') msg='Нет подключения к интернету. Проверьте сеть.';
-    if(msg.indexOf('Таймаут')>=0) msg='Сервер не отвечает. Попробуйте позже.';
-    document.getElementById('erM').textContent=msg;
-  });
+  /* Load instantly from embedded/cache — NO waiting for API */
+  chs=getChannels();
+  document.getElementById('ld').classList.add('hid');
+  document.getElementById('cb').classList.remove('hid');
+  buildTabs();
+  render();
+  /* Refresh from API in background (non-blocking) */
+  refreshFromAPI();
 }
 
-buildTabs();
 if(document.readyState!=='loading')go();else document.addEventListener('DOMContentLoaded',go);
 
 })();
