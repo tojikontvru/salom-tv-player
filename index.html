@@ -210,7 +210,7 @@ function mkCard(c){
 
   var lb=document.createElement('div');lb.className='logobox';
   var img=document.createElement('img');
-  img.src=logo;img.alt=title;img.loading='lazy';img.decoding='async';
+  img.src=encodeURI(logo);img.alt=title;img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';
   img.onerror=function(){var t=this.parentElement;if(t){t.innerHTML='<div style="font-weight:800;font-size:1rem;color:#555">'+title.charAt(0)+'</div>';t.style.background='#1a1a1a'}};
   lb.appendChild(img);
   el.appendChild(lb);
